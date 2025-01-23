@@ -51,37 +51,3 @@ resource "google_compute_subnetwork" "subnet" {
     ip_cidr_range = "10.2.0.0/24"  # Example range for services
   }
 }
-
-resource "google_cloudbuild_trigger" "github_trigger" {
-  name = "build-bff"
-  location = "global"  # Cloud Build triggers are global
-
-  github {
-    owner = "your-github-username"
-    name  = "your-repo-name"
-    push {
-      branch = "^main$"  # Trigger on pushes to the 'main' branch
-    }
-  }
-
-  filename = "cloudbuild.yaml"
-
-  # Additional substitutions if needed
-  substitutions = {
-    _REGION = "us-central1"
-  }
-
-  # Here we define what happens during the build
-  build {
-    steps = [
-      {
-        name = "gcr.io/cloud-builders/docker"
-        args = ["build", "-t", "gcr.io/$PROJECT_ID/your-app-name:$COMMIT_SHA", "."]
-      },
-      {
-        name = "gcr.io/cloud-builders/docker"
-        args = ["push", "gcr.io/$PROJECT_ID/your-app-name:$COMMIT_SHA"]
-      }
-    ]
-  }
-}
