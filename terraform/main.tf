@@ -51,3 +51,18 @@ resource "google_compute_subnetwork" "subnet" {
     ip_cidr_range = "10.2.0.0/24"  # Example range for services
   }
 }
+
+resource "google_cloudbuild_trigger" "bff_cloudbuild" {
+  name = "bff-cloudbuild"
+  location = "global"  # Cloud Build triggers are global
+
+  github {
+    owner = "manhcaoduy1912"
+    name  = "microservice-demo"
+    push {
+      branch = "^main$"  # Trigger on main branch push
+    }
+  }
+
+  filename = "terraform/cloudbuilds/bff-cloudbuild.yaml"
+}
