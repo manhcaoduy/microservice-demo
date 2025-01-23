@@ -1,0 +1,26 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: microservices-demo
+build:
+  artifacts:
+    - image: bff
+      context: apps/bff
+      docker:
+        dockerfile: Dockerfile
+deploy:
+  helm:
+    releases:
+    - name: manhcao-app
+      chartPath: helm-charts
+      valuesFiles:
+      - helm-charts/values-local.yaml
+      setValueTemplates:
+        image.repository: "{{.IMAGE_MY_APP_IMAGE}}"
+        image.tag: "{{.DIGEST_MY_APP_IMAGE}}"
+portForward:
+- resourceType: service
+  resourceName: bff
+  namespace: default
+  port: 3000
+  localPort: 3000
