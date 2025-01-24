@@ -45,18 +45,29 @@ output "cloud_build_service_account_key" {
   sensitive = true
 }
 
+resource "google_cloudbuild_trigger" "bff_cloudbuild" {
+  name = "bff-cloudbuild"
+  location = "global"
+  disabled = false
 
-# resource "google_cloudbuild_trigger" "bff_cloudbuild" {
-#   name = "bff-cloudbuild"
-#   location = "global"  # Cloud Build triggers are global
+  github {
+    owner = "manhcaoduy"
+    name  = "microservice-demo"
+    push {
+      branch = "^main$"
+      invert_regex = false
+    }
+  }
 
-#   github {
-#     owner = "manhcaoduy"
-#     name  = "microservice-demo"
-#     push {
-#       branch = "^main$"  # Trigger on main branch push
-#     }
-#   }
+  filename = "terraform/cloudbuilds/bff-cloudbuild.yaml"
 
-#   filename = "terraform/cloudbuilds/bff-cloudbuild.yaml"
-# }
+  substitutions = {
+    _PROJECT_ID = var.project_id
+  }
+
+  approval_config {
+    approval_required = true
+  }
+
+  service_account = "projects/${var.project_id}/serviceAccounts/${google_service_account.cloudbuild_sa.email}"
+}
