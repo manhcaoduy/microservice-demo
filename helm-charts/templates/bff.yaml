@@ -30,7 +30,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: {{ .Values.bff.image }}
+        image: {{ .Values.bff.image }}:{{ .Values.bff.tag }}
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: {{ .Values.bff.port }}
