@@ -21,6 +21,12 @@ resource "google_project_iam_member" "cloudbuild_sa_user" {
   member  = "serviceAccount:${google_service_account.cloudbuild_sa.email}"
 }
 
+resource "google_project_iam_member" "cloudbuild_sa_log_writer" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.cloudbuild_sa.email}"
+}
+
 # Optional: Create a key for the service account
 resource "google_service_account_key" "cloudbuild_key" {
   service_account_id = google_service_account.cloudbuild_sa.name
