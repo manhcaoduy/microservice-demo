@@ -17,13 +17,3 @@ variable "cluster_name" {
   type    = string
   default = "my-gke-cluster"
 }
-
-variable "pods_range_name" {
-  type    = string
-  default = "manhcao-pods-range"
-}
-
-variable "services_range_name" {
-  type    = string
-  default = "manhcao-services-range"
-}
