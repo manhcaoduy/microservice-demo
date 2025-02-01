@@ -40,10 +40,10 @@ resource "google_service_account_key" "cloudbuild_key" {
 }
 
 # Output the key if needed
-output "cloud_build_service_account_key" {
-  value     = google_service_account_key.cloudbuild_key.private_key
-  sensitive = true
-}
+# output "cloud_build_service_account_key" {
+#   value     = google_service_account_key.cloudbuild_key.private_key
+#   sensitive = true
+# }
 
 resource "google_cloudbuild_trigger" "bff_cloudbuild" {
   name = "bff-cloudbuild"

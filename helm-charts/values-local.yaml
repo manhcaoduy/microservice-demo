@@ -1,4 +1,5 @@
 bff:
   name: bff
-  image: bff:latest 
+  image: bff 
   port: 3000
+  tag: latest

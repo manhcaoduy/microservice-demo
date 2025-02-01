@@ -1,48 +1,108 @@
-module "gke" {
-  source                     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
-  project_id                 = var.project_id
-  name                       = var.cluster_name
-  regional                   = false
-  zones                      = [var.zone]
-  network                    = google_compute_network.vpc_network.name
-  subnetwork                 = google_compute_subnetwork.subnet.name
-  ip_range_pods              = var.pods_range_name
-  ip_range_services          = var.services_range_name
-  remove_default_node_pool   = true
-  initial_node_count         = 1
-  deletion_protection        = false
+resource "google_container_cluster" "gke_cluster" {
+  name     = "my-gke-cluster-1"
+  location = var.region 
+
+  remove_default_node_pool = true
+  initial_node_count       = 1
+
+  addons_config {
+    horizontal_pod_autoscaling {
+      disabled = false
+    }
+    http_load_balancing {
+      disabled = false
+    }
+  }
+
+  timeouts {
+    create = "30m"
+    update = "40m"
+  }
+
+  deletion_protection = false
 }
 
-module "gke_auth" {
-  source = "terraform-google-modules/kubernetes-engine/google//modules/auth"
-  depends_on   = [module.gke]
-  project_id   = var.project_id
-  location     = module.gke.location
-  cluster_name = module.gke.name
+resource "google_container_node_pool" "primary_nodes" {
+  name       = "my-node-pool"
+  location   = var.region      
+  cluster    = google_container_cluster.gke_cluster.name
+  node_count = 1                   
+
+  node_config {
+    machine_type = "e2-micro"     
+    disk_size_gb = 10
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
 }
+
+data "google_client_config" "default" {}
 
 resource "local_file" "kubeconfig" {
-  content  = module.gke_auth.kubeconfig_raw
-  filename = "kubeconfig-${var.cluster_name}"
+  content = <<-EOT
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ${google_container_cluster.gke_cluster.master_auth[0].cluster_ca_certificate}
+    server: https://${google_container_cluster.gke_cluster.endpoint}
+  name: ${google_container_cluster.gke_cluster.name}
+contexts:
+- context:
+    cluster: ${google_container_cluster.gke_cluster.name}
+    user: ${google_container_cluster.gke_cluster.name}
+  name: ${google_container_cluster.gke_cluster.name}
+current-context: ${google_container_cluster.gke_cluster.name}
+kind: Config
+preferences: {}
+users:
+- name: ${google_container_cluster.gke_cluster.name}
+  user:
+    token: ${data.google_client_config.default.access_token}
+EOT
+  filename = "${path.module}/kubeconfig"
 }
 
-resource "google_compute_network" "vpc_network" {
-  name                    = "vpc-network"
-  auto_create_subnetworks = false
+provider "helm" {
+  kubernetes {
+    host                   = "https://${google_container_cluster.gke_cluster.endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(google_container_cluster.gke_cluster.master_auth[0].cluster_ca_certificate)
+  }
 }
 
-resource "google_compute_subnetwork" "subnet" {
-  name          = "gke-subnet"
-  ip_cidr_range = "10.0.0.0/16"
-  region        = var.region
-  network       = google_compute_network.vpc_network.name
-  secondary_ip_range {
-    range_name    = var.pods_range_name  # This should match your var.pods_range_name
-    ip_cidr_range = "10.1.0.0/16"  # Example range for pods
+provider "kubernetes" {
+  host                   = "https://${google_container_cluster.gke_cluster.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(google_container_cluster.gke_cluster.master_auth[0].cluster_ca_certificate)
+}
+
+
+# Create ArgoCD namespace
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = "argocd"
   }
 
-  secondary_ip_range {
-    range_name    = var.services_range_name # This should match your var.services_range_name
-    ip_cidr_range = "10.2.0.0/24"  # Example range for services
+  depends_on = [
+    google_container_cluster.gke_cluster,
+  ]
+}
+
+# Install ArgoCD using Helm
+resource "helm_release" "argocd" {
+  name       = "argocd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  namespace  = kubernetes_namespace.argocd.metadata[0].name
+  version    = "5.51.6"
+
+  set {
+    name  = "server.service.type"
+    value = "LoadBalancer"
   }
+
+  depends_on = [
+    kubernetes_namespace.argocd
+  ]
 }
