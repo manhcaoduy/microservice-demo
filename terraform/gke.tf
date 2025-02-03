@@ -5,6 +5,11 @@ resource "google_container_cluster" "gke_cluster" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
+  node_config {
+    machine_type = "e2-medium"
+    disk_size_gb = 10
+  }
+
   addons_config {
     horizontal_pod_autoscaling {
       disabled = false
@@ -29,7 +34,7 @@ resource "google_container_node_pool" "primary_nodes" {
   node_count = 1                   
 
   node_config {
-    machine_type = "e2-micro"     
+    machine_type = "e2-medium"     
     disk_size_gb = 10
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
@@ -38,30 +43,6 @@ resource "google_container_node_pool" "primary_nodes" {
 }
 
 data "google_client_config" "default" {}
-
-resource "local_file" "kubeconfig" {
-  content = <<-EOT
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: ${google_container_cluster.gke_cluster.master_auth[0].cluster_ca_certificate}
-    server: https://${google_container_cluster.gke_cluster.endpoint}
-  name: ${google_container_cluster.gke_cluster.name}
-contexts:
-- context:
-    cluster: ${google_container_cluster.gke_cluster.name}
-    user: ${google_container_cluster.gke_cluster.name}
-  name: ${google_container_cluster.gke_cluster.name}
-current-context: ${google_container_cluster.gke_cluster.name}
-kind: Config
-preferences: {}
-users:
-- name: ${google_container_cluster.gke_cluster.name}
-  user:
-    token: ${data.google_client_config.default.access_token}
-EOT
-  filename = "${path.module}/kubeconfig"
-}
 
 provider "helm" {
   kubernetes {
@@ -77,7 +58,6 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(google_container_cluster.gke_cluster.master_auth[0].cluster_ca_certificate)
 }
 
-
 # Create ArgoCD namespace
 resource "kubernetes_namespace" "argocd" {
   metadata {
@@ -87,6 +67,10 @@ resource "kubernetes_namespace" "argocd" {
   depends_on = [
     google_container_cluster.gke_cluster,
   ]
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Install ArgoCD using Helm
@@ -96,7 +80,6 @@ resource "helm_release" "argocd" {
   chart      = "argo-cd"
   namespace  = kubernetes_namespace.argocd.metadata[0].name
   version    = "5.51.6"
-
   set {
     name  = "server.service.type"
     value = "LoadBalancer"
@@ -104,5 +87,45 @@ resource "helm_release" "argocd" {
 
   depends_on = [
     kubernetes_namespace.argocd
+  ]
+  # Configure SSH repository
+  set {
+    name  = "configs.repositories.${var.argocd_application_name}.url"
+    value = var.github_ssh_url
+  }
+
+  set {
+    name  = "configs.repositories.${var.argocd_application_name}.sshPrivateKey"
+    value = file(var.github_ssh_private_key)
+  }
+}
+
+# Create ArgoCD Application as a Kubernetes manifest
+resource "kubernetes_manifest" "argocd_application" {
+  provider = kubernetes
+  manifest = {
+    apiVersion = "argoproj.io/v1alpha1"
+    kind       = "Application"
+    metadata = {
+      name      = var.argocd_application_name
+      namespace = "argocd"
+    }
+    spec = {
+      project = "default"
+      source = {
+        repoURL        = var.github_ssh_url
+        targetRevision = "HEAD"
+        path          = "helm-charts"
+      }
+      destination = {
+        server    = "https://kubernetes.default.svc"
+        namespace = "default"
+      }
+    }
+  }
+
+  depends_on = [
+    helm_release.argocd,
+    google_container_cluster.gke_cluster
   ]
 }

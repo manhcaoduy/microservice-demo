@@ -17,3 +17,16 @@ variable "cluster_name" {
   type    = string
   default = "my-gke-cluster"
 }
+
+variable "github_ssh_url" {
+  type    = string
+}
+
+variable "github_ssh_private_key" {
+  type    = string
+}
+
+variable "argocd_application_name" {
+  type    = string
+}
+
