@@ -1,0 +1,23 @@
+version: '3.8'
+
+networks:
+  microservices-demo-network:
+    name: microservices-demo-network
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: microservice-demo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - microservices-demo-network
+
+volumes:
+  postgres_data:
