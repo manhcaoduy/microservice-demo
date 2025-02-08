@@ -5,9 +5,9 @@ metadata:
 build:
   artifacts:
     - image: bff
-      context: apps/bff
+      context: app
       docker:
-        dockerfile: Dockerfile
+        dockerfile: app/apps/bff/Dockerfile
 deploy:
   helm:
     releases:
