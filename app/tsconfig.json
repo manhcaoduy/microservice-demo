@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": true,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -12,17 +13,25 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "strictPropertyInitialization": true,
     "paths": {
       "@libs/shared": [
         "libs/shared/src"
       ],
       "@libs/shared/*": [
         "libs/shared/src/*"
+      ],
+      "@libs/postgres": [
+        "libs/postgres/src"
+      ],
+      "@libs/postgres/*": [
+        "libs/postgres/src/*"
       ]
     }
   }
