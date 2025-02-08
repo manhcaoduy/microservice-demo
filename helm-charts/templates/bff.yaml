@@ -34,6 +34,17 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: {{ .Values.bff.port }}
+        env:
+        - name: POSTGRES_HOST
+          value: {{ required "postgres.host is required" .Values.postgres.host | quote }}
+        - name: POSTGRES_PORT
+          value: {{ required "postgres.port is required" .Values.postgres.port | quote }}
+        - name: POSTGRES_USER
+          value: {{ required "postgres.user is required" .Values.postgres.user | quote }}
+        - name: POSTGRES_PASSWORD
+          value: {{ required "postgres.password is required" .Values.postgres.password | quote }}
+        - name: POSTGRES_DB
+          value: {{ required "postgres.database is required" .Values.postgres.database | quote }}
         resources:
           requests:
             cpu: 200m
