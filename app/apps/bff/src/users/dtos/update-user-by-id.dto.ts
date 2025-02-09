@@ -3,6 +3,14 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserByIdDto {
   @ApiProperty({
+    description: 'The password of the user',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  password?: string;
+
+  @ApiProperty({
     description: 'The first name of the user',
     required: false,
   })

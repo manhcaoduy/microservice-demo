@@ -11,7 +11,9 @@
         "noExplicitAny": "off"
       },
       "style": {
-        "useImportType": "off"
+        "useImportType": "off",
+        "useNodejsImportProtocol": "off",
+        "noNonNullAssertion": "off"
       },
       "correctness": {
         "noUnusedImports": "error"
