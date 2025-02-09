@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './users/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
+import { UserModule } from './users/user.module';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import * as Joi from 'joi';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         autoLoadEntities: true,
-        synchronize: configService.get('LOCAL') ? true : false,
+        synchronize: !!configService.get('LOCAL'),
       }),
       inject: [ConfigService],
     }),

@@ -1,11 +1,20 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserService } from './user.service';
-import { GetUsersResponse } from './responses/get-users.response';
+import type { CreateUserDto } from './dtos/create-user.dto';
+import type { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
 import { GetUserByIdResponse } from './responses/get-user-by-id.response';
+import { GetUsersResponse } from './responses/get-users.response';
 import { UpdateUserByIdResponse } from './responses/update-user-by-id.response';
-import { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
-import { CreateUserDto } from './dtos/create-user.dto';
+import type { UserService } from './user.service';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
