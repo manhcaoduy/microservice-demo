@@ -14,6 +14,8 @@ import { UserModule } from './users/user.module';
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
+        PASSWORD_SECRET_KEY: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
         LOCAL: Joi.boolean().optional(),
       }),
     }),

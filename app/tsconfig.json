@@ -21,10 +21,10 @@
     "esModuleInterop": true,
     "strictPropertyInitialization": true,
     "paths": {
-      "@libs/shared": ["libs/shared/src"],
-      "@libs/shared/*": ["libs/shared/src/*"],
       "@libs/postgres": ["libs/postgres/src"],
-      "@libs/postgres/*": ["libs/postgres/src/*"]
+      "@libs/postgres/*": ["libs/postgres/src/*"],
+      "@libs/common": ["libs/common/src"],
+      "@libs/common/*": ["libs/common/src/*"]
     }
   }
 }

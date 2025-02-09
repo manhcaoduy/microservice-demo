@@ -28,15 +28,6 @@
         "tsConfigPath": "apps/bff/tsconfig.app.json"
       }
     },
-    "shared": {
-      "type": "library",
-      "root": "libs/shared",
-      "entryFile": "index",
-      "sourceRoot": "libs/shared/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/shared/tsconfig.lib.json"
-      }
-    },
     "postgres": {
       "type": "library",
       "root": "libs/postgres",
@@ -44,6 +35,15 @@
       "sourceRoot": "libs/postgres/src",
       "compilerOptions": {
         "tsConfigPath": "libs/postgres/tsconfig.lib.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     }
   }
