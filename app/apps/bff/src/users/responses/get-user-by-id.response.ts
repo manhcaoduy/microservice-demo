@@ -1,4 +1,4 @@
-import type { User } from '@libs/postgres/entities/user.entity';
+import { User } from '@libs/postgres/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Expose } from 'class-transformer';

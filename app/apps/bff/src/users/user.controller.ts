@@ -9,12 +9,12 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import type { CreateUserDto } from './dtos/create-user.dto';
-import type { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
 import { GetUserByIdResponse } from './responses/get-user-by-id.response';
 import { GetUsersResponse } from './responses/get-users.response';
 import { UpdateUserByIdResponse } from './responses/update-user-by-id.response';
-import type { UserService } from './user.service';
+import { UserService } from './user.service';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
