@@ -10,3 +10,7 @@ postgres:
   user: postgres
   password: postgres
   database: microservice-demo
+
+auth:
+  jwt_secret: "secret"
+  password_secret_key: "secret"
