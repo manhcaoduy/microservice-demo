@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { Expose } from 'class-transformer';
-import { UserResponse } from './user.response';
+import { UserResponse } from '../../../../../libs/common/src/responses/user.response';
 
 export class GetMyUserInfoResponse {
   @Expose()

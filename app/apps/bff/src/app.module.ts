@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { UserModule } from './users/user.module';
+import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './users/user.module';
         POSTGRES_DB: Joi.string().required(),
         PASSWORD_SECRET_KEY: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
+        BFF_SERVICE_PORT: Joi.number().required(),
         LOCAL: Joi.boolean().optional(),
       }),
     }),
@@ -34,5 +36,6 @@ import { UserModule } from './users/user.module';
     }),
     UserModule,
   ],
+  providers: [LoggingInterceptor],
 })
 export class AppModule {}
