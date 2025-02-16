@@ -1,5 +1,5 @@
 resource "google_container_cluster" "gke_cluster" {
-  name     = "my-gke-cluster-1"
+  name     = "my-gke-cluster"
   location = var.region 
 
   remove_default_node_pool = true
@@ -25,6 +25,13 @@ resource "google_container_cluster" "gke_cluster" {
   }
 
   deletion_protection = false
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to node_config.resource_labels that are managed by GKE
+      node_config[0].resource_labels["goog-gke-node-pool-provisioning-model"],
+    ]
+  }
 }
 
 resource "google_container_node_pool" "primary_nodes" {
@@ -38,6 +45,13 @@ resource "google_container_node_pool" "primary_nodes" {
     disk_size_gb = 10
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to node_config.resource_labels that are managed by GKE
+      node_config[0].resource_labels["goog-gke-node-pool-provisioning-model"],
     ]
   }
 }
@@ -58,36 +72,25 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(google_container_cluster.gke_cluster.master_auth[0].cluster_ca_certificate)
 }
 
-# Create ArgoCD namespace
-resource "kubernetes_namespace" "argocd" {
-  metadata {
-    name = "argocd"
-  }
-
-  depends_on = [
-    google_container_cluster.gke_cluster,
-  ]
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 # Install ArgoCD using Helm
 resource "helm_release" "argocd" {
   name       = "argocd"
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
-  namespace  = kubernetes_namespace.argocd.metadata[0].name
+  namespace  = "argocd"
   version    = "5.51.6"
+  create_namespace = true
+
+    # Wait for CRDs to be installed
+  wait             = true
+  wait_for_jobs    = true
+  timeout          = 600 # 10 minutes
+
   set {
     name  = "server.service.type"
     value = "LoadBalancer"
   }
 
-  depends_on = [
-    kubernetes_namespace.argocd
-  ]
   # Configure SSH repository
   set {
     name  = "configs.repositories.${var.argocd_application_name}.url"
@@ -102,6 +105,10 @@ resource "helm_release" "argocd" {
 
 # Create ArgoCD Application as a Kubernetes manifest
 resource "kubernetes_manifest" "argocd_application" {
+  depends_on = [
+    helm_release.argocd,
+  ]
+
   provider = kubernetes
   manifest = {
     apiVersion = "argoproj.io/v1alpha1"
@@ -123,9 +130,4 @@ resource "kubernetes_manifest" "argocd_application" {
       }
     }
   }
-
-  depends_on = [
-    helm_release.argocd,
-    google_container_cluster.gke_cluster
-  ]
 }

@@ -33,18 +33,6 @@ resource "google_project_iam_member" "cloudbuild_sa_artifact_registry_uploader" 
   member  = "serviceAccount:${google_service_account.cloudbuild_sa.email}"
 }
 
-# Optional: Create a key for the service account
-resource "google_service_account_key" "cloudbuild_key" {
-  service_account_id = google_service_account.cloudbuild_sa.name
-  public_key_type    = "TYPE_X509_PEM_FILE"
-}
-
-# Output the key if needed
-# output "cloud_build_service_account_key" {
-#   value     = google_service_account_key.cloudbuild_key.private_key
-#   sensitive = true
-# }
-
 resource "google_cloudbuild_trigger" "bff_cloudbuild" {
   name = "bff-cloudbuild"
   location = "global"
