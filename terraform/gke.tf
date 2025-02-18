@@ -32,6 +32,16 @@ resource "google_container_cluster" "gke_cluster" {
       node_config[0].resource_labels["goog-gke-node-pool-provisioning-model"],
     ]
   }
+
+  network    = google_compute_network.vpc.id
+  subnetwork = google_compute_subnetwork.subnet.id
+
+  networking_mode = "VPC_NATIVE"
+  
+  ip_allocation_policy {
+    cluster_secondary_range_name  = "pod-ranges"
+    services_secondary_range_name = "service-ranges"
+  }
 }
 
 resource "google_container_node_pool" "primary_nodes" {
@@ -104,6 +114,7 @@ resource "helm_release" "argocd" {
 }
 
 # Create ArgoCD Application as a Kubernetes manifest
+# Need to comment it when the cluster is not created
 resource "kubernetes_manifest" "argocd_application" {
   depends_on = [
     helm_release.argocd,

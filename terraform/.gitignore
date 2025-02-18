@@ -5,3 +5,4 @@ terraform.tfstate.backup
 kubeconfig
 gke_gcloud_auth_plugin_cache
 credentials.json
+tfplan
