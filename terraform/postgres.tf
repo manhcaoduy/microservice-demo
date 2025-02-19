@@ -16,6 +16,8 @@ resource "google_sql_database_instance" "postgres" {
   }
 
   deletion_protection = false
+
+  depends_on = [google_service_networking_connection.private_vpc_connection]
 }
 
 resource "google_sql_database" "database" {
