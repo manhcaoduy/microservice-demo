@@ -62,6 +62,26 @@ resource "google_compute_firewall" "internal" {
   source_ranges = ["10.0.0.0/16", "192.168.0.0/18", "192.168.64.0/18"]
 }
 
+# Firewall rule to allow SSH access
+resource "google_compute_firewall" "allow_ssh" {
+  name    = "allow-ssh"
+  network = google_compute_network.vpc.id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "943"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["vpn-server"]
+}
+
+# Create a static IP for the VPN server
+resource "google_compute_address" "vpn" {
+  name   = "vpn-static-ip"
+  region = var.region
+}
+
 # Private Service Access connection setup
 # - private_ip_address: Reserves an IP range for VPC peering with Google services (e.g. Cloud SQL)
 # - private_vpc_connection: Establishes VPC peering with Google services to enable private connectivity

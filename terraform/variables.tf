@@ -41,3 +41,11 @@ variable "database_user" {
 variable "database_password" {
   type    = string
 }
+
+variable "vpn_manh_ssh_public_key_file_path" {
+  type    = string
+}
+
+variable "vpn_manh_ssh_private_key_file_path" {
+  type    = string
+}

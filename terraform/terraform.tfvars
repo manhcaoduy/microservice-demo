@@ -7,3 +7,6 @@ argocd_application_name = "microservice-demo"
 database_name = "microservice-demo"
 database_user = "admin"
 database_password = "admin"
+
+vpn_manh_ssh_private_key_file_path = "~/.ssh/manhcaoduy"
+vpn_manh_ssh_public_key_file_path = "~/.ssh/manhcaoduy.pub"
