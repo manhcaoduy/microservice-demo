@@ -5,7 +5,7 @@ bff:
   tag: 5757f50
 
 postgres:
-  host: 10.125.0.3
+  host: 10.255.0.3
   port: 5432
   user: admin
   password: admin 
