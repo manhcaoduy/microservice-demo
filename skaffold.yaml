@@ -20,7 +20,7 @@ deploy:
         image.tag: "{{.DIGEST_MY_APP_IMAGE}}"
 portForward:
 - resourceType: service
-  resourceName: bff
-  namespace: default
-  port: 3000
-  localPort: 3000
+  resourceName: ingress-nginx-controller
+  namespace: ingress-nginx
+  port: 80
+  localPort: 4505

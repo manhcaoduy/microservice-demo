@@ -4,7 +4,13 @@
 
 # Development
 
-Start a minikube cluster on your local machine and then
+Start a minikube cluster on your local machine 
+
+Addon ingress into minikube
+
+```
+minikube addons enable ingress
+```
 
 ```
 skaffold dev
