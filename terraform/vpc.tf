@@ -59,20 +59,55 @@ resource "google_compute_firewall" "internal" {
     protocol = "udp"
   }
 
-  source_ranges = ["10.0.0.0/16", "192.168.0.0/18", "192.168.64.0/18"]
+  source_ranges = [
+    google_compute_subnetwork.subnet.ip_cidr_range,
+    google_compute_subnetwork.subnet.secondary_ip_range[0].ip_cidr_range,
+    google_compute_subnetwork.subnet.secondary_ip_range[1].ip_cidr_range,
+  ]
 }
 
 # Firewall rule to allow SSH access
-resource "google_compute_firewall" "allow_ssh" {
-  name    = "allow-ssh"
+resource "google_compute_firewall" "vpn_internal_firewall_rule" {
+  name    = "vpn-internal-firewall-rule"
   network = google_compute_network.vpc.id
 
   allow {
     protocol = "tcp"
-    ports    = ["22", "943"]
   }
 
-  source_ranges = ["0.0.0.0/0"]
+  allow {
+    protocol = "udp"
+  }
+
+  # This restricts access to your VPC CIDR ranges
+  source_ranges = [
+    google_compute_subnetwork.subnet.ip_cidr_range,
+  ]
+  target_tags   = ["vpn-server"]
+}
+
+resource "google_compute_firewall" "vpn_internet_firewall_rule" {
+  name    = "vpn-internet-firewall-rule"
+  network = google_compute_network.vpc.id
+
+  allow {
+    protocol = "tcp"
+    ports = [
+      "22", # Allow SSH (22)
+      "943", # Allow Admin UI (943)
+      "443", # Allow OpenVPN TCP (443)
+    ]
+  }
+
+  allow {
+    protocol = "udp"
+    ports = ["1194"] # Allow OpenVPN UDP traffic
+  }
+
+  source_ranges = [
+    "0.0.0.0/0"
+  ]
+
   target_tags   = ["vpn-server"]
 }
 
@@ -99,4 +134,16 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 
   deletion_policy = "ABANDON"
+}
+
+output "vpc_ip" {
+  value = google_compute_global_address.private_ip_address.address
+}
+
+output "subnet_ip_cidr_range" {
+  value = google_compute_subnetwork.subnet.ip_cidr_range
+}
+
+output "private_ip_address_range" {
+  value = "${google_compute_global_address.private_ip_address.address}/${google_compute_global_address.private_ip_address.prefix_length}"
 }

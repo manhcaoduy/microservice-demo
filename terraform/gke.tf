@@ -98,7 +98,7 @@ resource "helm_release" "argocd" {
 
   set {
     name  = "server.service.type"
-    value = "LoadBalancer"
+    value = "ClusterIP"
   }
 
   # Configure SSH repository
