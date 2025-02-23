@@ -42,10 +42,22 @@ variable "database_password" {
   type    = string
 }
 
-variable "vpn_manh_ssh_public_key_file_path" {
+variable "vpn_server_ssh_public_key_file_path" {
   type    = string
 }
 
-variable "vpn_manh_ssh_private_key_file_path" {
+variable "vpn_server_ssh_private_key_file_path" {
+  type    = string
+}
+
+variable "vpn_server_user" {
+  type    = string
+}
+
+variable "openas_username" {
+  type    = string
+}
+
+variable "openas_password" {
   type    = string
 }

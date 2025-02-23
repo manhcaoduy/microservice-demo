@@ -8,5 +8,10 @@ database_name = "microservice-demo"
 database_user = "admin"
 database_password = "admin"
 
-vpn_manh_ssh_private_key_file_path = "~/.ssh/manhcaoduy"
-vpn_manh_ssh_public_key_file_path = "~/.ssh/manhcaoduy.pub"
+vpn_server_ssh_private_key_file_path = "~/.ssh/manhcaoduy"
+vpn_server_ssh_public_key_file_path = "~/.ssh/manhcaoduy.pub"
+
+vpn_server_user = "manh"
+
+openas_username = "manh"
+openas_password = "manh"
