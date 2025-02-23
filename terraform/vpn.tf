@@ -1,7 +1,7 @@
 # Create the VPN server instance
 resource "google_compute_instance" "vpn_server" {
   name         = "vpn-server"
-  machine_type = "e2-micro"
+  machine_type = "e2-medium"
   zone         = var.zone
 
   boot_disk {
@@ -20,7 +20,7 @@ resource "google_compute_instance" "vpn_server" {
 
   metadata = {
     ssh-keys = join("\n", [
-      "manh:${file(var.vpn_manh_ssh_public_key_file_path)}",
+      "${var.vpn_server_user}:${file(var.vpn_server_ssh_public_key_file_path)}",
     ])
   }
 
@@ -33,9 +33,24 @@ resource "google_compute_instance" "vpn_server" {
     apt install tzdata
     timedatectl set-timezone Asia/Ho_Chi_Minh
 
-    bash <(curl -fsS https://packages.openvpn.net/as/install.sh) --yes
+    bash <(curl -fsS https://packages.openvpn.net/as/install.sh) --yes && echo "$(tail -n 8 /usr/local/openvpn_as/init.log)" > /home/${var.vpn_server_user}/init.log
 
-    echo "Startup script completed" > /startup-complete
+    /usr/local/openvpn_as/scripts/sacli --user ${var.openas_username} --new_pass "${var.openas_password}" SetLocalPassword
+    /usr/local/openvpn_as/scripts/sacli --user ${var.openas_username} --key "prop_deny" --value "false" UserPropPut
+    /usr/local/openvpn_as/scripts/sacli --user ${var.openas_username} --key "prop_autologin" --value "true" UserPropPut
+    /usr/local/openvpn_as/scripts/sacli --user ${var.openas_username} --key "pvt_client_cert" --value "true" UserPropPut
+    /usr/local/openvpn_as/scripts/sacli --user ${var.openas_username} --key "pvt_pwd_auth" --value "false" UserPropPut
+
+    /usr/local/openvpn_as/scripts/sacli --key "host.name" --value "${google_compute_address.vpn.address}" ConfigPut
+
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.client.routing.reroute_dns" --value "false" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.client.routing.reroute_gw" --value "false" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.0" --value "${google_compute_subnetwork.subnet.ip_cidr_range}" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.1" --value "${google_compute_global_address.private_ip_address.address}/${google_compute_global_address.private_ip_address.prefix_length}" ConfigPut
+
+    /usr/local/openvpn_as/scripts/sacli start
+
+    /usr/local/openvpn_as/scripts/sacli --user ${var.openas_username} GetAutologin > /home/${var.vpn_server_user}/user.ovpn
   EOF
 
   service_account {
@@ -46,13 +61,13 @@ resource "google_compute_instance" "vpn_server" {
   provisioner "remote-exec" {
     connection {
       type        = "ssh"
-      user        = "manh"
-      private_key = file(var.vpn_manh_ssh_private_key_file_path)
+      user        = var.vpn_server_user
+      private_key = file(var.vpn_server_ssh_private_key_file_path)
       host        = google_compute_address.vpn.address
     }
 
     inline = [
-      "while [ ! -f /startup-complete ]; do echo 'Waiting for startup script to complete...'; sleep 10; done",
+      "while [ ! -f /home/${var.vpn_server_user}/init.log ]; do echo 'Waiting for startup script to complete...'; sleep 30; done",
       "echo 'Startup script has completed!'"
     ]
   }
