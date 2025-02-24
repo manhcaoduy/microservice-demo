@@ -112,33 +112,3 @@ resource "helm_release" "argocd" {
     value = file(var.github_ssh_private_key)
   }
 }
-
-# Create ArgoCD Application as a Kubernetes manifest
-# Need to comment it when the cluster is not created
-resource "kubernetes_manifest" "argocd_application" {
-  depends_on = [
-    helm_release.argocd,
-  ]
-
-  provider = kubernetes
-  manifest = {
-    apiVersion = "argoproj.io/v1alpha1"
-    kind       = "Application"
-    metadata = {
-      name      = var.argocd_application_name
-      namespace = "argocd"
-    }
-    spec = {
-      project = "default"
-      source = {
-        repoURL        = var.github_ssh_url
-        targetRevision = "HEAD"
-        path          = "helm-charts"
-      }
-      destination = {
-        server    = "https://kubernetes.default.svc"
-        namespace = "default"
-      }
-    }
-  }
-}
