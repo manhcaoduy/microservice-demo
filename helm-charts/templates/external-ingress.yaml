@@ -3,9 +3,9 @@ kind: Ingress
 metadata:
   name: {{ required "externalIngress.name is required" .Values.externalIngress.name | quote }}
   annotations:
-    kubernetes.io/ingress.className: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:
