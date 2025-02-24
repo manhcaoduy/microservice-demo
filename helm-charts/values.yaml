@@ -17,3 +17,7 @@ auth:
 
 externalIngress:
   name: "external-ingress"
+
+argocdIngress:
+  name: argocd-ingress
+  namespace: argocd

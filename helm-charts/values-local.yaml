@@ -18,3 +18,8 @@ auth:
 externalIngress:
   host: localhost
   name: external-ingress
+
+argocdIngress:
+  host: localhost
+  name: argocd-ingress
+  namespace: default
