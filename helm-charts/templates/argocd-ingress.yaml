@@ -7,13 +7,14 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /argocd
-            pathType: Prefix
+          - path: /argocd(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: argocd-server
