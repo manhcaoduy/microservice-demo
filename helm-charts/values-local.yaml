@@ -3,6 +3,7 @@ bff:
   image: bff 
   port: 3000
   tag: latest
+  url: "http://localhost:3000/bff"
 
 postgres:
   host: host.docker.internal

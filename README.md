@@ -26,7 +26,7 @@ cd terraform
 
 Setup your variables in `terraform.tfvars`
 
-Comment out the `resource "kubernetes_manifest" "argocd_application"`
+Comment out the whole file `gke_after_credentials.tf`
 
 ```
 terraform plan && terraform apply -auto-approve
@@ -38,7 +38,7 @@ Get GKE cluster credentials
 gcloud container clusters get-credentials {{CLUSTER_NAME}} --region {{REGION}} --project {{GCP_ID}}
 ```
 
-And the uncomment the previous resource type and start again
+And the uncomment the previous file and start again
 
 ```
 terraform plan && terraform apply -auto-approve
@@ -62,4 +62,14 @@ Get the opvn file
 
 ```
 scp -i {open_vpn_private_key_path} {vpn_user}@{vpn_server_ip}:~/user.ovpn ./
+```
+
+### Postgres
+
+Make sure you VPNed first
+
+Get the Postgres connection Url
+
+```
+terraform output -raw postgres_connection_url
 ```

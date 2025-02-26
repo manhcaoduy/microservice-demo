@@ -49,6 +49,10 @@ spec:
           value: {{ required "auth.jwt_secret is required" .Values.auth.jwt_secret | quote }}
         - name: PASSWORD_SECRET_KEY
           value: {{ required "auth.password_secret_key is required" .Values.auth.password_secret_key | quote }}
+        - name: BFF_SERVICE_URL
+          value: {{ required "bff.url is required" .Values.bff.url | quote }}
+        - name: BFF_SERVICE_PORT
+          value: {{ required "bff.port is required" .Values.bff.port | quote }}
         resources:
           requests:
             cpu: 200m

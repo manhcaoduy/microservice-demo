@@ -48,7 +48,9 @@ async function bootstrap() {
     }),
   );
 
+  const configService = app.get(ConfigService);
   const config = new DocumentBuilder()
+    .addServer(configService.get('BFF_SERVICE_URL')!)
     .setTitle('BFF API')
     .setDescription('The BFF API description')
     .setVersion('1.0')
@@ -78,7 +80,6 @@ async function bootstrap() {
   const loggingInterceptor = app.get(LoggingInterceptor);
   app.useGlobalInterceptors(loggingInterceptor);
 
-  const configService = app.get(ConfigService);
   await app.listen(configService.get('BFF_SERVICE_PORT')!);
 }
 

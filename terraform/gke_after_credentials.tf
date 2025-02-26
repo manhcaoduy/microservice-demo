@@ -20,16 +20,24 @@ resource "kubernetes_manifest" "argocd_application" {
         targetRevision = "HEAD"
         path          = "helm-charts"
       }
+
       destination = {
         server    = "https://kubernetes.default.svc"
         namespace = "default"
       }
+
+      # syncPolicy = {
+      #   automated = {
+      #     prune    = true
+      #     selfHeal = true
+      #   }
+      # }
     }
   }
 }
 
 resource "helm_release" "ingress_nginx_external" {
-  name       = "ingress-nginx-internal"
+  name       = "ingress-nginx-external"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
   namespace  = "ingress-nginx"
@@ -42,6 +50,8 @@ resource "helm_release" "ingress_nginx_external" {
     controller:
       ingressClassResource:
         name: nginx-external
+        controllerValue: "k8s.io/ingress-nginx-external"
+        default: false
       service:
         type: LoadBalancer
         annotations:
@@ -74,6 +84,8 @@ resource "helm_release" "ingress_nginx_argocd" {
     controller:
       ingressClassResource:
         name: nginx-argocd
+        controllerValue: "k8s.io/ingress-nginx-argocd"
+        default: false
       service:
         type: LoadBalancer
         annotations:
@@ -102,4 +114,28 @@ data "kubernetes_secret" "argocd_admin_password" {
 output "argocd_admin_password" {
   value     = data.kubernetes_secret.argocd_admin_password.data.password
   sensitive = true
+}
+
+output "ingress_nginx_external_ip" {
+  value = data.kubernetes_service.ingress_nginx_external.status.0.load_balancer.0.ingress.0.ip
+}
+
+output "ingress_nginx_argocd_ip" {
+  value = data.kubernetes_service.ingress_nginx_argocd.status.0.load_balancer.0.ingress.0.ip
+}
+
+data "kubernetes_service" "ingress_nginx_external" {
+  metadata {
+    name = "ingress-nginx-external-controller"
+    namespace = "ingress-nginx"
+  }
+  depends_on = [helm_release.ingress_nginx_external]
+}
+
+data "kubernetes_service" "ingress_nginx_argocd" {
+  metadata {
+    name = "ingress-nginx-argocd-controller" 
+    namespace = "ingress-nginx"
+  }
+  depends_on = [helm_release.ingress_nginx_argocd]
 }

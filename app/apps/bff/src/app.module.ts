@@ -17,6 +17,7 @@ import { LoggingInterceptor } from '@libs/common/interceptors/logging.intercepto
         POSTGRES_DB: Joi.string().required(),
         PASSWORD_SECRET_KEY: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
+        BFF_SERVICE_URL: Joi.string().required(),
         BFF_SERVICE_PORT: Joi.number().required(),
         LOCAL: Joi.boolean().optional(),
       }),
