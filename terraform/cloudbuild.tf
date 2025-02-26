@@ -47,6 +47,8 @@ resource "google_cloudbuild_trigger" "bff_cloudbuild" {
     }
   }
 
+  included_files = ["app/**"]
+
   filename = "terraform/cloudbuilds/bff-cloudbuild.yaml"
 
   substitutions = {
