@@ -61,3 +61,7 @@ variable "openas_username" {
 variable "openas_password" {
   type    = string
 }
+
+variable "kubeconfig_path" {
+  type    = string
+}

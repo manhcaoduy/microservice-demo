@@ -15,3 +15,5 @@ vpn_server_user = "manh"
 
 openas_username = "manh"
 openas_password = "manh"
+
+kubeconfig_path = "./kubeconfig"
