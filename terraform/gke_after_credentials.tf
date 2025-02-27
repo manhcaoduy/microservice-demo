@@ -1,3 +1,44 @@
+provider "helm" {
+  kubernetes {
+    config_path = var.kubeconfig_path
+  }
+}
+
+provider "kubernetes" {
+  config_path = var.kubeconfig_path
+}
+
+# Install ArgoCD using Helm
+resource "helm_release" "argocd" {
+  name       = "argocd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  namespace  = "argocd"
+  version    = "5.51.6"
+  create_namespace = true
+
+    # Wait for CRDs to be installed
+  wait             = true
+  wait_for_jobs    = true
+  timeout          = 600 # 10 minutes
+
+  set {
+    name  = "server.service.type"
+    value = "ClusterIP"
+  }
+
+  # Configure SSH repository
+  set {
+    name  = "configs.repositories.${var.argocd_application_name}.url"
+    value = var.github_ssh_url
+  }
+
+  set {
+    name  = "configs.repositories.${var.argocd_application_name}.sshPrivateKey"
+    value = file(var.github_ssh_private_key)
+  }
+}
+
 # Create ArgoCD Application as a Kubernetes manifest
 # Need to comment it when the cluster is not created
 resource "kubernetes_manifest" "argocd_application" {
