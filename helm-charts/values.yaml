@@ -3,10 +3,10 @@ bff:
   image: gcr.io/nodal-cogency-446014-j2/bff
   port: 3000
   tag: "9c3152f"
-  url: "http://10.0.0.31/bff"
+  url: "http://10.0.0.11/bff"
 
 postgres:
-  host: 10.6.0.3
+  host: 10.140.0.3
   port: 5432
   user: admin
   password: admin 
