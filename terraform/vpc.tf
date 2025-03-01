@@ -111,10 +111,36 @@ resource "google_compute_firewall" "vpn_internet_firewall_rule" {
   target_tags   = ["vpn-server"]
 }
 
+resource "google_compute_firewall" "nginx_firewall_rule" {
+  name    = "nginx-firewall-rule"
+  network = google_compute_network.vpc.id
+
+  allow {
+    protocol = "tcp"
+    ports = [
+      "22", # Allow SSH (22)
+      "80", # Allow HTTP (80)
+      "443", # Allow HTTPS (443)
+    ]
+  }
+
+  source_ranges = [
+    "0.0.0.0/0"
+  ]
+
+  target_tags   = ["nginx-server"]
+}
+
 # Create a static IP for the VPN server
 resource "google_compute_address" "vpn" {
   name   = "vpn-static-ip"
   region = var.region
+}
+
+# Create static IP for nginx instance
+resource "google_compute_address" "nginx_static_ip" {
+  name         = "nginx-static-ip"
+  region       = var.region
 }
 
 # Private Service Access connection setup
