@@ -42,8 +42,8 @@ module "nginx" {
 
   vpc_id = module.vpc.vpc_ip
   subnet_id = module.vpc.subnet_id
-  static_ip = module.vpc.nginx_public_ip
-
+  static_ip = module.nginx.nginx_public_ip
+  region = var.region
   zone = var.zone
   nginx_server = {
     name            = "nginx-server"
@@ -65,9 +65,9 @@ module "vpn" {
   vpc_id = module.vpc.vpc_ip
   subnet_id = module.vpc.subnet_id
   subnet_ip_cidr_range = module.vpc.subnet_ip_cidr_range
-  static_ip = module.vpc.vpn_server_ip
-  postgres_private_ip_address_range = module.vpc.private_ip_address_range
-
+  static_ip = module.vpn.vpn_server_ip
+  postgres_private_ip_address_range = module.postgres.private_ip_address_range
+  region = var.region
   zone = var.zone
   vpn_server = {
     name            = "vpn-server"

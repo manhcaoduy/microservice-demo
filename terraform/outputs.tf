@@ -1,9 +1,9 @@
 output "vpn_server_ip" {
-  value       = module.vpc.vpn_server_ip
+  value       = module.vpn.vpn_server_ip
 }
 
 output "nginx_public_ip" {
-  value = module.vpc.nginx_public_ip
+  value = module.nginx.nginx_public_ip
 }
 
 output "postgres_connection_url" {

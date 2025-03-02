@@ -154,3 +154,30 @@ resource "google_compute_instance" "nginx" {
     systemctl restart nginx
   EOF
 }
+
+
+resource "google_compute_firewall" "nginx_firewall_rule" {
+  name    = "nginx-firewall-rule"
+  network = var.vpc_id
+
+  allow {
+    protocol = "tcp"
+    ports = [
+      "22", # Allow SSH (22)
+      "80", # Allow HTTP (80)
+      "443", # Allow HTTPS (443)
+    ]
+  }
+
+  source_ranges = [
+    "0.0.0.0/0"
+  ]
+
+  target_tags   = ["nginx-server"]
+}
+
+# Create static IP for nginx instance
+resource "google_compute_address" "nginx_static_ip" {
+  name         = "nginx-static-ip"
+  region       = var.region
+}

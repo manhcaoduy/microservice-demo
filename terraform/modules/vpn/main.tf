@@ -72,3 +72,34 @@ resource "google_compute_instance" "vpn_server" {
     ]
   }
 }
+
+resource "google_compute_firewall" "vpn_internet_firewall_rule" {
+  name    = "vpn-internet-firewall-rule"
+  network = var.vpc_id
+
+  allow {
+    protocol = "tcp"
+    ports = [
+      "22", # Allow SSH (22)
+      "943", # Allow Admin UI (943)
+      "443", # Allow OpenVPN TCP (443)
+    ]
+  }
+
+  allow {
+    protocol = "udp"
+    ports = ["1194"] # Allow OpenVPN UDP traffic
+  }
+
+  source_ranges = [
+    "0.0.0.0/0"
+  ]
+
+  target_tags   = ["vpn-server"]
+}
+
+# Create a static IP for the VPN server
+resource "google_compute_address" "vpn" {
+  name   = "vpn-static-ip"
+  region = var.region
+}

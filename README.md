@@ -44,8 +44,7 @@ terraform plan --out=tfplan -target=module.k8s-services.helm_release.argocd && t
 ```
 
 ```
-terraform plan --out=tfplan \  -target=module.k8s-services \                  
-  -target=module.nginx && terraform apply "tfplan"
+terraform plan --out=tfplan -target=module.k8s-services -target=module.nginx && terraform apply "tfplan"
   ```
 
 ### VPN

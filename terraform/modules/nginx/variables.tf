@@ -10,9 +10,14 @@ variable "static_ip" {
   type = string
 }
 
+variable "region" {
+  type = string
+}
+
 variable "zone" {
   type = string
 }
+
 variable "nginx_server" {
   type = object({
     name = string

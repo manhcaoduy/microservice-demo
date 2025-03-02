@@ -18,6 +18,10 @@ variable "postgres_private_ip_address_range" {
   type = string
 }
 
+variable "region" {
+  type = string
+}
+
 variable "zone" {
   type = string
 }
