@@ -24,12 +24,13 @@ Move into terraform folder
 cd terraform
 ```
 
-Setup your variables in `terraform.tfvars`
-
-Comment out the whole file `gke_after_credentials.tf`
-
 ```
-terraform plan && terraform apply -auto-approve
+terraform plan --out=tfplan \
+  -target=module.cloudbuild \
+  -target=module.postgres \
+  -target=module.vpn \
+  -target=module.vpc \
+  -target=module.gke && terraform apply "tfplan"
 ```
 
 Get GKE cluster credentials
@@ -38,11 +39,14 @@ Get GKE cluster credentials
 gcloud container clusters get-credentials {{CLUSTER_NAME}} --region {{REGION}} --project {{GCP_ID}}
 ```
 
-And the uncomment the previous file and start again
+```
+terraform plan --out=tfplan -target=module.k8s-services.helm_release.argocd && terraform apply "tfplan"
+```
 
 ```
-terraform plan && terraform apply -auto-approve
-```
+terraform plan --out=tfplan \  -target=module.k8s-services \                  
+  -target=module.nginx && terraform apply "tfplan"
+  ```
 
 ### VPN
 

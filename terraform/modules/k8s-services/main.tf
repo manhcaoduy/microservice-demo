@@ -29,13 +29,13 @@ resource "helm_release" "argocd" {
 
   # Configure SSH repository
   set {
-    name  = "configs.repositories.${var.argocd_application_name}.url"
-    value = var.github_ssh_url
+    name  = "configs.repositories.${var.argocd.name}.url"
+    value = var.argocd.repo.ssh_url
   }
 
   set {
-    name  = "configs.repositories.${var.argocd_application_name}.sshPrivateKey"
-    value = file(var.github_ssh_private_key)
+    name  = "configs.repositories.${var.argocd.name}.sshPrivateKey"
+    value = file(var.argocd.repo.ssh_private_key_path)
   }
 }
 
@@ -51,15 +51,15 @@ resource "kubernetes_manifest" "argocd_application" {
     apiVersion = "argoproj.io/v1alpha1"
     kind       = "Application"
     metadata = {
-      name      = var.argocd_application_name
+      name      = var.argocd.name
       namespace = "argocd"
     }
     spec = {
       project = "default"
       source = {
-        repoURL        = var.github_ssh_url
-        targetRevision = "HEAD"
-        path          = "helm-charts"
+        repoURL        = var.argocd.repo.ssh_url
+        targetRevision = var.argocd.repo.target_revision
+        path          = var.argocd.repo.path
       }
 
       destination = {
@@ -143,40 +143,4 @@ resource "helm_release" "ingress_nginx_argocd" {
         enabled: true
   EOT
   ]
-}
-
-data "kubernetes_secret" "argocd_admin_password" {
-  metadata {
-    name      = "argocd-initial-admin-secret"
-    namespace = "argocd"
-  }
-}
-
-output "argocd_admin_password" {
-  value     = data.kubernetes_secret.argocd_admin_password.data.password
-  sensitive = true
-}
-
-output "ingress_nginx_external_ip" {
-  value = data.kubernetes_service.ingress_nginx_external.status.0.load_balancer.0.ingress.0.ip
-}
-
-output "ingress_nginx_argocd_ip" {
-  value = data.kubernetes_service.ingress_nginx_argocd.status.0.load_balancer.0.ingress.0.ip
-}
-
-data "kubernetes_service" "ingress_nginx_external" {
-  metadata {
-    name = "ingress-nginx-external-controller"
-    namespace = "ingress-nginx"
-  }
-  depends_on = [helm_release.ingress_nginx_external]
-}
-
-data "kubernetes_service" "ingress_nginx_argocd" {
-  metadata {
-    name = "ingress-nginx-argocd-controller" 
-    namespace = "ingress-nginx"
-  }
-  depends_on = [helm_release.ingress_nginx_argocd]
 }

@@ -1,5 +1,5 @@
 resource "google_container_cluster" "gke_cluster" {
-  name     = "my-gke-cluster"
+  name     = var.gke.name
   location = var.region 
 
   remove_default_node_pool = true
@@ -13,8 +13,8 @@ resource "google_container_cluster" "gke_cluster" {
   }
 
   node_config {
-    machine_type = "e2-medium"
-    disk_size_gb = 10
+    machine_type = var.gke.machine_type
+    disk_size_gb = var.gke.disk_size_gb
   }
 
   addons_config {
@@ -40,26 +40,26 @@ resource "google_container_cluster" "gke_cluster" {
     ]
   }
 
-  network    = google_compute_network.vpc.id
-  subnetwork = google_compute_subnetwork.subnet.id
+  network    = var.vpc_id
+  subnetwork = var.subnet_id
 
   networking_mode = "VPC_NATIVE"
   
   ip_allocation_policy {
-    cluster_secondary_range_name  = "pod-ranges"
-    services_secondary_range_name = "service-ranges"
+    cluster_secondary_range_name  = var.pod_ranges_name
+    services_secondary_range_name = var.service_ranges_name
   }
 }
 
 resource "google_container_node_pool" "primary_nodes" {
-  name       = "my-node-pool"
+  name       = var.gke_primary_node_pool.name
   location   = var.region      
   cluster    = google_container_cluster.gke_cluster.name
   node_count = 1                   
 
   node_config {
-    machine_type = "e2-medium"     
-    disk_size_gb = 50
+    machine_type = var.gke_primary_node_pool.machine_type     
+    disk_size_gb = var.gke_primary_node_pool.disk_size_gb
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]

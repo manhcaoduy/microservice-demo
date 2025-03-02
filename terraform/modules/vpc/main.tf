@@ -1,26 +1,26 @@
 # VPC Network
 resource "google_compute_network" "vpc" {
-  name                    = "main-vpc"
+  name                    = var.vpc.name
   auto_create_subnetworks = false
   routing_mode           = "REGIONAL"
 }
 
 # Subnet for GKE and Cloud SQL
 resource "google_compute_subnetwork" "subnet" {
-  name          = "main-subnet"
-  ip_cidr_range = "10.0.0.0/16"
+  name          = var.subnet.name
+  ip_cidr_range = var.subnet.ip_cidr_range
   region        = var.region
   network       = google_compute_network.vpc.id
 
   # Secondary IP ranges for GKE pods and services
   secondary_ip_range {
-    range_name    = "pod-ranges"
-    ip_cidr_range = "192.168.0.0/18"
+    range_name    = var.subnet.pod_ranges_name
+    ip_cidr_range = var.subnet.pod_ranges_ip_cidr_range
   }
 
   secondary_ip_range {
-    range_name    = "service-ranges"
-    ip_cidr_range = "192.168.64.0/18"
+    range_name    = var.subnet.service_ranges_name
+    ip_cidr_range = var.subnet.service_ranges_ip_cidr_range
   }
 
   private_ip_google_access = true
@@ -160,16 +160,4 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 
   deletion_policy = "ABANDON"
-}
-
-output "vpc_ip" {
-  value = google_compute_global_address.private_ip_address.address
-}
-
-output "subnet_ip_cidr_range" {
-  value = google_compute_subnetwork.subnet.ip_cidr_range
-}
-
-output "private_ip_address_range" {
-  value = "${google_compute_global_address.private_ip_address.address}/${google_compute_global_address.private_ip_address.prefix_length}"
 }

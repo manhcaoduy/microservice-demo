@@ -1,26 +1,26 @@
 # Create nginx instance
 resource "google_compute_instance" "nginx" {
-  name         = "nginx-server"
-  machine_type = "e2-medium"
+  name         = var.nginx_server.name
+  machine_type = var.nginx_server.machine_type
   zone         = var.zone
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-2204-lts"
+      image = var.nginx_server.boot_disk_image
     }
   }
 
   network_interface {
-    network    = google_compute_network.vpc.id
-    subnetwork = google_compute_subnetwork.subnet.id
+    network    = var.vpc_id
+    subnetwork = var.subnet_id
 
     access_config {
-      nat_ip = google_compute_address.nginx_static_ip.address
+      nat_ip = var.static_ip
     }
   }
 
   metadata = {
-    ssh-keys = "${var.vpn_server_user}:${file(var.vpn_server_ssh_public_key_file_path)}"
+    ssh-keys = "${var.nginx_server.ssh.user}:${file(var.nginx_server.ssh.public_key_file_path)}"
   }
 
   tags = ["nginx-server"]
@@ -65,7 +65,7 @@ resource "google_compute_instance" "nginx" {
     cat > /etc/nginx/sites-available/default <<'EOL'
     upstream upstream_app_pool {
       zone backends 64k;
-      server ${data.kubernetes_service.ingress_nginx_external.status.0.load_balancer.0.ingress.0.ip};
+      server ${var.nginx_server.upstream_ip.external};
     }
 
     # upstream upstream_v2_ingress {
@@ -153,12 +153,4 @@ resource "google_compute_instance" "nginx" {
 
     systemctl restart nginx
   EOF
-
-  depends_on = [
-    helm_release.ingress_nginx_external
-  ]
-}
-
-output "nginx_public_ip" {
-  value = google_compute_address.nginx_static_ip.address
 }

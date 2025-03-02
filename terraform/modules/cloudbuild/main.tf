@@ -34,22 +34,22 @@ resource "google_project_iam_member" "cloudbuild_sa_artifact_registry_uploader" 
 }
 
 resource "google_cloudbuild_trigger" "bff_cloudbuild" {
-  name = "bff-cloudbuild"
+  name = var.bff_cloudbuild.name
   location = "global"
   disabled = false
 
   github {
-    owner = "manhcaoduy"
-    name  = "microservice-demo"
+    owner = var.bff_cloudbuild.github.owner
+    name  = var.bff_cloudbuild.github.name
     push {
-      branch = "^main$"
+      branch = var.bff_cloudbuild.github.branch
       invert_regex = false
     }
   }
 
-  included_files = ["app/**"]
+  included_files = var.bff_cloudbuild.included_files
 
-  filename = "terraform/cloudbuilds/bff-cloudbuild.yaml"
+  filename = var.bff_cloudbuild.filename
 
   substitutions = {
     _PROJECT_ID = var.project_id
