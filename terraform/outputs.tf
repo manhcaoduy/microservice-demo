@@ -11,6 +11,10 @@ output "postgres_connection_url" {
   sensitive   = true
 }
 
+output "argocd_nginx_private_ip" {
+  value = module.k8s-services.ingress_nginx_argocd_ip
+}
+
 output "argocd_admin_password" {
   value     = module.k8s-services.argocd_admin_password
   sensitive = true

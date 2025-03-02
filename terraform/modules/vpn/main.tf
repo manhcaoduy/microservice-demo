@@ -48,6 +48,13 @@ resource "google_compute_instance" "vpn_server" {
     /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.0" --value "${var.subnet_ip_cidr_range}" ConfigPut
     /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.1" --value "${var.postgres_private_ip_address_range}" ConfigPut
 
+    # Configure GCP DNS servers
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.allow_private_nets_to_clients" --value "true" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.gateway_access" --value "true" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.client.routing.reroute_dns" --value "custom" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.dhcp_option.dns.0" --value "169.254.169.254" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.dhcp_option.dns.1" --value "8.8.8.8" ConfigPut
+
     /usr/local/openvpn_as/scripts/sacli start
 
     /usr/local/openvpn_as/scripts/sacli --user ${var.vpn_server.openas.username} GetAutologin > /home/${var.vpn_server.user}/user.ovpn

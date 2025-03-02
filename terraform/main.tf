@@ -139,3 +139,11 @@ module "k8s-services" {
     }
   }
 }
+
+module "dns" {
+  source = "./modules/dns"
+
+  vpc_id = module.vpc.vpc_ip
+  domain = "argocd.manhcd.site."
+  argocd_nginx_private_ip = module.k8s-services.ingress_nginx_argocd_ip
+}
