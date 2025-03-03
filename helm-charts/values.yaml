@@ -6,7 +6,7 @@ bff:
   url: "https://manhcd.site/bff"
 
 postgres:
-  host: 10.96.0.3
+  host: "postgres.manhcd.site"
   port: 5432
   user: admin
   password: admin 
