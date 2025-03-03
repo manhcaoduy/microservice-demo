@@ -1,6 +1,6 @@
 resource "google_dns_managed_zone" "argocd" {
   name        = "argocd-zone"
-  dns_name    = var.domain
+  dns_name    = var.argocd_domain
   description = "DNS zone for ArgoCD"
   
   private_visibility_config {
@@ -17,4 +17,25 @@ resource "google_dns_record_set" "argocd" {
   type         = "A"
   ttl          = 300
   rrdatas      = [var.argocd_nginx_private_ip]
+}
+
+resource "google_dns_managed_zone" "postgres" {
+  name        = "postgres-zone"
+  dns_name    = var.postgres_domain
+  description = "DNS zone for Postgres"
+  
+  private_visibility_config {
+    networks {
+      network_url = var.vpc_id
+    }
+  }
+  visibility = "private"
+}
+
+resource "google_dns_record_set" "postgres" {
+  name         = google_dns_managed_zone.postgres.dns_name
+  managed_zone = google_dns_managed_zone.postgres.name
+  type         = "A"
+  ttl          = 300
+  rrdatas      = [var.postgres_private_ip]
 }
