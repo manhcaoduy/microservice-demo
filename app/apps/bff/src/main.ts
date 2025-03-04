@@ -9,8 +9,16 @@ import { BaseException } from '@libs/common/exceptions/http.exception';
 import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+import { WinstonModule } from 'nest-winston';
+import { createLoggerTransports } from '@libs/common/logger/transports';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      level: 'info',
+      transports: createLoggerTransports(process.env.LOCAL === 'true', 'bff'),
+    }),
+  });
 
   app.useGlobalFilters(new AllExceptionFilter());
   // Add global interceptors
