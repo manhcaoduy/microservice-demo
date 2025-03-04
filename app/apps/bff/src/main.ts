@@ -1,16 +1,16 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { BaseException } from '@libs/common/exceptions/http.exception';
+import { AllExceptionFilter } from '@libs/common/filters/all-exception.filter';
+import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 import { TransformResponseInterceptor } from '@libs/common/interceptors/transform-response.interceptor';
+import { createLoggerTransports } from '@libs/common/logger/transports';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common';
-import { AllExceptionFilter } from '@libs/common/filters/all-exception.filter';
-import { BaseException } from '@libs/common/exceptions/http.exception';
-import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { WinstonModule } from 'nest-winston';
-import { createLoggerTransports } from '@libs/common/logger/transports';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

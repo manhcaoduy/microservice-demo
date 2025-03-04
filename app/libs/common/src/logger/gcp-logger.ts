@@ -1,4 +1,4 @@
-import { Logger } from "@nestjs/common";
+import { Logger } from '@nestjs/common';
 
 export const FATAL_TAG = '[FATAL]';
 export const LOG_SEPARATOR = '$#$#$@$$#';
@@ -14,10 +14,14 @@ export class GcpLogger {
     return `${message}${LOG_SEPARATOR}${JSON.stringify(payload)}`;
   }
 
-  private prepareLogPayload(payload?: object, err?: Error): Record<string, any> {
-    const processedPayload: Record<string, any> = payload == undefined ? {} : { ...payload };
+  private prepareLogPayload(
+    payload?: object,
+    err?: Error,
+  ): Record<string, any> {
+    const processedPayload: Record<string, any> =
+      payload === undefined ? {} : { ...payload };
     if (err) {
-      processedPayload['error'] = { msg: err.message, stack: err.stack };
+      processedPayload.error = { msg: err.message, stack: err.stack };
     }
     return processedPayload;
   }
@@ -27,21 +31,32 @@ export class GcpLogger {
   }
 
   info(message: string, payload?: object, err?: Error) {
-    this.logger.log(this.stringify(message, this.prepareLogPayload(payload, err)));
+    this.logger.log(
+      this.stringify(message, this.prepareLogPayload(payload, err)),
+    );
   }
 
   // alias for info
   log = this.info;
 
   warn(message: string, payload?: object, err?: Error) {
-    this.logger.warn(this.stringify(message, this.prepareLogPayload(payload, err)));
+    this.logger.warn(
+      this.stringify(message, this.prepareLogPayload(payload, err)),
+    );
   }
 
   error(message: string, payload?: object, err?: Error) {
-    this.logger.error(this.stringify(message, this.prepareLogPayload(payload, err)));
+    this.logger.error(
+      this.stringify(message, this.prepareLogPayload(payload, err)),
+    );
   }
 
   fatal(message: string, payload?: object, err?: Error) {
-    this.logger.error(this.stringify(`${FATAL_TAG} ${message}`, this.prepareLogPayload(payload, err)));
+    this.logger.error(
+      this.stringify(
+        `${FATAL_TAG} ${message}`,
+        this.prepareLogPayload(payload, err),
+      ),
+    );
   }
 }

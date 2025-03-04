@@ -1,9 +1,9 @@
+import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { UserModule } from './users/user.module';
-import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 
 @Module({
   imports: [

@@ -1,8 +1,7 @@
-import { LoggingWinston } from "@google-cloud/logging-winston"
-import { utilities } from "nest-winston"
-import * as winston from "winston"
-import { format, transports as winstonTransports } from "winston"
-import { FATAL_TAG, LOG_SEPARATOR } from "./gcp-logger"
+import { utilities } from 'nest-winston';
+import * as winston from 'winston';
+import { format, transports as winstonTransports } from 'winston';
+import { FATAL_TAG, LOG_SEPARATOR } from './gcp-logger';
 
 export function createLoggerTransports(local: boolean, serviceName: string) {
   if (local) {
@@ -19,7 +18,7 @@ export function createLoggerTransports(local: boolean, serviceName: string) {
           }),
         ),
       }),
-    ]
+    ];
   }
 
   return [
@@ -32,7 +31,7 @@ export function createLoggerTransports(local: boolean, serviceName: string) {
         format.json({ deterministic: false }),
       ),
     }),
-  ]
+  ];
 }
 
 export const stringLogFormat = winston.format((info) => {
@@ -50,8 +49,7 @@ export const jsonLogFormat = winston.format((info) => {
         info.payload = JSON.parse(payload);
         info.message = message;
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
   return info;
 });
@@ -64,7 +62,11 @@ export const severityFormat = winston.format((info) => {
     // @ts-ignore
     info.level = undefined;
   }
-  if (typeof info.message === 'string' && info.severity === 'ERROR' && info.message.startsWith(`${FATAL_TAG} `)) {
+  if (
+    typeof info.message === 'string' &&
+    info.severity === 'ERROR' &&
+    info.message.startsWith(`${FATAL_TAG} `)
+  ) {
     info.severity = 'CRITICAL';
     info.message = info.message.slice(`${FATAL_TAG} `.length);
   }

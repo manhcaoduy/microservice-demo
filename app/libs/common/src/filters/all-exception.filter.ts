@@ -1,10 +1,10 @@
 import { Catch, HttpException, HttpStatus } from '@nestjs/common';
 import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
-import { BaseException } from '../exceptions/http.exception';
 import {
   HTTP_ERROR_CODES,
   HTTP_RESPONSE_STATUS,
 } from '../exceptions/exception.constant';
+import { BaseException } from '../exceptions/http.exception';
 
 interface ErrorInfo {
   code: string;
