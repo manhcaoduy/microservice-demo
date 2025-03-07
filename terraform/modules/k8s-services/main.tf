@@ -67,12 +67,12 @@ resource "kubernetes_manifest" "argocd_application" {
         namespace = "default"
       }
 
-      # syncPolicy = {
-      #   automated = {
-      #     prune    = true
-      #     selfHeal = true
-      #   }
-      # }
+      syncPolicy = {
+        automated = {
+          prune    = true
+          selfHeal = true
+        }
+      }
     }
   }
 }
