@@ -37,6 +37,21 @@ module "postgres" {
   }
 }
 
+module "redis" {
+  source = "./modules/redis"
+
+  region = var.region
+  vpc_id = module.vpc.vpc_ip
+  redis = {
+    name = "redis"
+    tier = "BASIC"
+    memory_size_gb = 1
+    redis_version = "REDIS_6_X"
+    display_name = "Redis Cache Instance"
+    password = "redis"
+  }
+}
+
 module "nginx" {
   source = "./modules/nginx"
 
@@ -66,7 +81,7 @@ module "vpn" {
   subnet_id = module.vpc.subnet_id
   subnet_ip_cidr_range = module.vpc.subnet_ip_cidr_range
   static_ip = module.vpn.vpn_server_ip
-  postgres_private_ip_address_range = module.postgres.private_ip_address_range
+  private_ip_address_range = module.vpc.private_ip_address_range
   region = var.region
   zone = var.zone
   vpn_server = {
@@ -144,8 +159,13 @@ module "dns" {
   source = "./modules/dns"
 
   vpc_id = module.vpc.vpc_ip
+
   argocd_domain = "argocd.manhcd.site."
   argocd_nginx_private_ip = module.k8s-services.ingress_nginx_argocd_ip
+
   postgres_domain = "postgres.manhcd.site."
   postgres_private_ip = module.postgres.postgres_ip
+
+  redis_domain = "redis.manhcd.site."
+  redis_private_ip = module.redis.redis_host
 }

@@ -16,7 +16,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
       level: 'info',
-      transports: createLoggerTransports(process.env.LOCAL === 'true', 'bff'),
+      transports: createLoggerTransports(process.env.ENV === 'local', 'bff'),
     }),
   });
 

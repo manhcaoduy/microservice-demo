@@ -1,7 +1,3 @@
-output "private_ip_address_range" {
-  value = "${google_compute_global_address.private_ip_address.address}/${google_compute_global_address.private_ip_address.prefix_length}"
-}
-
 output "postgres_ip" {
   value = google_sql_database_instance.postgres.private_ip_address
 }

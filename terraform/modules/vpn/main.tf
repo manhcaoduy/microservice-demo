@@ -46,7 +46,7 @@ resource "google_compute_instance" "vpn_server" {
     /usr/local/openvpn_as/scripts/sacli --key "vpn.client.routing.reroute_dns" --value "false" ConfigPut
     /usr/local/openvpn_as/scripts/sacli --key "vpn.client.routing.reroute_gw" --value "false" ConfigPut
     /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.0" --value "${var.subnet_ip_cidr_range}" ConfigPut
-    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.1" --value "${var.postgres_private_ip_address_range}" ConfigPut
+    /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.1" --value "${var.private_ip_address_range}" ConfigPut
 
     # Configure GCP DNS servers
     /usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.allow_private_nets_to_clients" --value "true" ConfigPut

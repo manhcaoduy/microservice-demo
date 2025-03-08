@@ -53,6 +53,16 @@ spec:
           value: {{ required "bff.url is required" .Values.bff.url | quote }}
         - name: BFF_SERVICE_PORT
           value: {{ required "bff.port is required" .Values.bff.port | quote }}
+        - name: ENV
+          value: {{ .Values.env | quote }}
+        - name: REDIS_HOST
+          value: {{ required "redis.host is required" .Values.redis.host | quote }}
+        - name: REDIS_PORT
+          value: {{ required "redis.port is required" .Values.redis.port | quote }}
+        - name: REDIS_PASSWORD
+          value: {{ required "redis.password is required" .Values.redis.password | quote }}
+        - name: REDIS_DATABASE
+          value: {{ required "redis.database is required" .Values.redis.database | quote }}
         resources:
           requests:
             cpu: 200m

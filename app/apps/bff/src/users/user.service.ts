@@ -1,4 +1,5 @@
 import { AuthService } from '@libs/common/auth/auth.service';
+import { GcpLogger } from '@libs/common/logger/gcp-logger';
 import { User } from '@libs/postgres/entities/user.entity';
 import {
   BadRequestException,
@@ -13,6 +14,8 @@ import { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new GcpLogger('UserService');
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,

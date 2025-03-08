@@ -21,10 +21,30 @@
     "esModuleInterop": true,
     "strictPropertyInitialization": true,
     "paths": {
-      "@libs/postgres": ["libs/postgres/src"],
-      "@libs/postgres/*": ["libs/postgres/src/*"],
-      "@libs/common": ["libs/common/src"],
-      "@libs/common/*": ["libs/common/src/*"]
+      "@libs/postgres": [
+        "libs/postgres/src"
+      ],
+      "@libs/postgres/*": [
+        "libs/postgres/src/*"
+      ],
+      "@libs/common": [
+        "libs/common/src"
+      ],
+      "@libs/common/*": [
+        "libs/common/src/*"
+      ],
+      "@libs/redis": [
+        "libs/redis/src"
+      ],
+      "@libs/redis/*": [
+        "libs/redis/src/*"
+      ],
+      "@libs/caching": [
+        "libs/caching/src"
+      ],
+      "@libs/caching/*": [
+        "libs/caching/src/*"
+      ]
     }
   }
 }

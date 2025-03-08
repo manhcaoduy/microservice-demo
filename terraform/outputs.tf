@@ -19,3 +19,8 @@ output "argocd_admin_password" {
   value     = module.k8s-services.argocd_admin_password
   sensitive = true
 }
+
+output "redis_url" {
+  value = "redis://:${module.redis.redis_password}@${module.redis.redis_host}:${module.redis.redis_port}"
+  sensitive = true
+}
