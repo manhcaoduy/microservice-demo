@@ -17,3 +17,7 @@ output "pod_ranges_name" {
 output "service_ranges_name" {
   value = google_compute_subnetwork.subnet.secondary_ip_range[1].range_name
 }
+
+output "private_ip_address_range" {
+  value = "${google_compute_global_address.private_ip_address.address}/${google_compute_global_address.private_ip_address.prefix_length}"
+}

@@ -14,7 +14,7 @@ variable "static_ip" {
   type = string
 }
 
-variable "postgres_private_ip_address_range" {
+variable "private_ip_address_range" {
   type = string
 }
 

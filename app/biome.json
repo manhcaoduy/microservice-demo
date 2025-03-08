@@ -17,6 +17,9 @@
       },
       "correctness": {
         "noUnusedImports": "error"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off"
       }
     }
   },
