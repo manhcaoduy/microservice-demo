@@ -1,7 +1,7 @@
 import { utilities } from 'nest-winston';
 import * as winston from 'winston';
 import { format, transports as winstonTransports } from 'winston';
-import { FATAL_TAG, LOG_SEPARATOR } from './gcp-logger';
+import { FATAL_TAG, LOG_SEPARATOR } from './app-logger';
 
 export function createLoggerTransports(local: boolean, serviceName: string) {
   if (local) {

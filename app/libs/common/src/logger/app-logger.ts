@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 export const FATAL_TAG = '[FATAL]';
 export const LOG_SEPARATOR = '$#$#$@$$#';
 
-export class GcpLogger {
+export class AppLogger {
   private logger: Logger;
 
   constructor(context: string) {

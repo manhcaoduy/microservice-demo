@@ -5,11 +5,11 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable, catchError } from 'rxjs';
-import { GcpLogger } from '../logger/gcp-logger';
+import { AppLogger } from '../logger/app-logger';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new GcpLogger(LoggingInterceptor.name);
+  private readonly logger = new AppLogger(LoggingInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(

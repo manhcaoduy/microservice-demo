@@ -77,3 +77,13 @@ Get the Postgres connection Url
 ```
 terraform output -raw postgres_connection_url
 ```
+
+### Redis
+
+Make sure you VPNed first
+
+Get the Redis connection Url
+
+```
+terraform output -raw redis_url
+```
