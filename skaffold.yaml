@@ -8,6 +8,10 @@ build:
       context: app
       docker:
         dockerfile: app/apps/bff/Dockerfile
+    - image: socketer
+      context: app
+      docker:
+        dockerfile: app/apps/socketer/Dockerfile
 deploy:
   helm:
     releases:

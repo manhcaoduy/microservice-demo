@@ -26,7 +26,7 @@ services:
     volumes:
       - redis_data:/data
     restart: always
-    command: redis-server --appendonly yes --requirepass "redis"
+    command: redis-server --requirepass "redis"
     networks:
       - microservices-demo-network
 

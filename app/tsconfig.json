@@ -35,9 +35,11 @@
         "libs/common/src/*"
       ],
       "@libs/redis": [
+        "libs/redis/src",
         "libs/redis/src"
       ],
       "@libs/redis/*": [
+        "libs/redis/src/*",
         "libs/redis/src/*"
       ],
       "@libs/caching": [
@@ -45,6 +47,12 @@
       ],
       "@libs/caching/*": [
         "libs/caching/src/*"
+      ],
+      "@libs/socket": [
+        "libs/socket/src"
+      ],
+      "@libs/socket/*": [
+        "libs/socket/src/*"
       ]
     }
   }

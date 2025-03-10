@@ -1,11 +1,11 @@
 import { AppCacheModule } from '@libs/caching/caching-client.module';
 import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 import { PostgresModule } from '@libs/postgres/postgres.module';
+import { RedisClientModule } from '@libs/socket/redis-client/redis.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { UserModule } from './users/user.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -17,8 +17,9 @@ import { UserModule } from './users/user.module';
     }),
     PostgresModule,
     UserModule,
-    AppCacheModule.registerWithMemory(),
-    AppCacheModule.registerWithRedis({ ttl: 100 }),
+    // AppCacheModule.registerWithMemory(),
+    // AppCacheModule.registerWithRedis({ ttl: 100 }),
+    RedisClientModule,
   ],
   providers: [LoggingInterceptor],
 })

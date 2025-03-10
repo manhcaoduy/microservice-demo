@@ -57,6 +57,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/caching/tsconfig.lib.json"
       }
+    },
+    "socketer": {
+      "type": "application",
+      "root": "apps/socketer",
+      "entryFile": "main",
+      "sourceRoot": "apps/socketer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/socketer/tsconfig.app.json"
+      }
+    },
+    "socket": {
+      "type": "library",
+      "root": "libs/socket",
+      "entryFile": "index",
+      "sourceRoot": "libs/socket/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/socket/tsconfig.lib.json"
+      }
     }
   }
 }

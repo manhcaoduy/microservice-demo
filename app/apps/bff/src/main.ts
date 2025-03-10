@@ -34,7 +34,7 @@ async function bootstrap() {
       crossOriginResourcePolicy: false,
     }),
   );
-  app.enableCors();
+  app.enableCors({ credentials: true });
 
   app.useGlobalPipes(
     new ValidationPipe({

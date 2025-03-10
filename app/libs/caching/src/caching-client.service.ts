@@ -14,7 +14,6 @@ abstract class BaseCacheService {
     value: T,
     ttlInMillisecond?: number,
   ): Promise<boolean> {
-    console.log({ key, value });
     return this.keyv.set(key, value, ttlInMillisecond);
   }
 
