@@ -3,7 +3,12 @@ kind: Ingress
 metadata:
   name: {{ required "externalIngress.name is required" .Values.externalIngress.name | quote }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /$2$3
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-pass-headers: "*"
+    
 spec:
   ingressClassName: {{ required "externalIngress.ingressClassName is required" .Values.externalIngress.ingressClassName | quote }}
   rules:
@@ -16,6 +21,20 @@ spec:
                 name: {{ .Values.bff.name }}
                 port:
                   number: 3000
+          - path: /socketer(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.socketer.name }}
+                port:
+                  number: {{ .Values.socketer.httpPort }}
+          - path: /()(socket.io)(/.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Values.socketer.name }}
+                port:
+                  number: {{ .Values.socketer.socketIoPort }}
       {{- if .Values.externalIngress.host }}
       host: {{ .Values.externalIngress.host | quote }}
       {{- end }}

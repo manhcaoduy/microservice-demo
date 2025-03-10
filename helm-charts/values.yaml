@@ -28,7 +28,4 @@ argocdIngress:
   ingressClassName: nginx-argocd
 
 redis:
-  host: redis.manhcd.site
-  port: 6379
-  password: redis
-  database: 0
+  url: redis://:redis@redis.manhcd.site:6379/0

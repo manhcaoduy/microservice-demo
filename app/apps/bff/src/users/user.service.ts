@@ -1,5 +1,6 @@
 import { AuthService } from '@libs/common/auth/auth.service';
 import { User } from '@libs/postgres/entities/user.entity';
+import { SocketEmitter } from '@libs/socket/emitter/emitter';
 import {
   BadRequestException,
   Injectable,
@@ -17,9 +18,14 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private authService: AuthService,
+    private socketEmitter: SocketEmitter,
   ) {}
 
   async findById(id: number): Promise<User | null> {
+    this.socketEmitter.emitEventToAllClients('get-user', {
+      id,
+    });
+
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {

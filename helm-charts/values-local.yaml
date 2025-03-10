@@ -7,6 +7,13 @@ bff:
   tag: latest
   url: "http://localhost:3000/bff"
 
+socketer:
+  name: socketer
+  image: socketer
+  socketIoPort: 3001
+  httpPort: 3002
+  tag: latest
+
 postgres:
   host: host.docker.internal
   port: 5432
@@ -29,8 +36,14 @@ argocdIngress:
   namespace: default
   ingressClassName: nginx
 
+socketIoIngress:
+  host: localhost
+  name: socket-io-ingress
+  namespace: default
+  ingressClassName: nginx
+
 redis:
   host: host.docker.internal
   port: 6390
   password: redis
-  database: 0
+  db: 0
