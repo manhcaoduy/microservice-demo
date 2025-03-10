@@ -18,7 +18,10 @@ export class AppCacheModule {
       imports: [
         ConfigModule.forRoot({
           validationSchema: Joi.object({
-            REDIS_URL: Joi.string().required(),
+            REDIS_HOST: Joi.string().required(),
+            REDIS_PORT: Joi.number().required(),
+            REDIS_PASSWORD: Joi.string().required(),
+            REDIS_DB: Joi.number().required(),
           }),
         }),
       ],
@@ -26,10 +29,9 @@ export class AppCacheModule {
         {
           provide: REDIS_KEYV_INSTANCE,
           useFactory: (configService: ConfigService) => {
-            const redisUrl = configService.get('REDIS_URL');
-            const store = new KeyvRedis(redisUrl);
+            const redisUrl = `redis://:${configService.get('REDIS_PASSWORD')}@${configService.get('REDIS_HOST')}:${configService.get('REDIS_PORT')}/${configService.get('REDIS_DB')}`;
             return new Keyv({
-              store,
+              store: new KeyvRedis(redisUrl),
               useKeyPrefix: false,
               ttl: cacheOption.ttl * 1000,
               namespace: undefined,
