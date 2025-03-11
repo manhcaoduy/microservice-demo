@@ -4,7 +4,7 @@ bff:
   name: bff
   image: gcr.io/nodal-cogency-446014-j2/bff
   port: 3000
-  tag: "afc2be0"
+  tag: "41c5b43"
   url: "https://manhcd.site/bff"
 
 socketer:
