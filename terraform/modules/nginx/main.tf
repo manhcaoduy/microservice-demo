@@ -111,13 +111,13 @@ resource "google_compute_instance" "nginx" {
       #   limit_conn two 20;
       # }
       
-      # location /socket.io {
-      #   proxy_pass http://upstream_app_pool/socket.io/;
-      #   proxy_http_version 1.1;
-      #   proxy_set_header Upgrade $http_upgrade;
-      #   proxy_set_header Connection "upgrade";
-      #   proxy_read_timeout 86400;
-      # }
+      location /socket.io {
+        proxy_pass http://upstream_app_pool/socket.io/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 3600;
+      }
 
       location / {
         add_header Access-Control-Expose-Headers "cf-ray, cf-cache-status";
