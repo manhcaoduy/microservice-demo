@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Redis } from 'ioredis';
 import Joi from 'joi';
 import { REDIS_CLIENT } from './const';
-import { Redis } from 'ioredis';
 
 @Global()
 @Module({

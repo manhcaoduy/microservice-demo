@@ -1,3 +1,7 @@
+import {
+  MemoryCacheService,
+  RedisCacheService,
+} from '@libs/caching/caching-client.service';
 import { AuthService } from '@libs/common/auth/auth.service';
 import { User } from '@libs/postgres/entities/user.entity';
 import { SocketEmitter } from '@libs/socket/emitter/emitter';
@@ -19,12 +23,40 @@ export class UserService {
     private userRepository: Repository<User>,
     private authService: AuthService,
     private socketEmitter: SocketEmitter,
+    private redisCacheService: RedisCacheService,
+    private memoryCacheService: MemoryCacheService,
   ) {}
 
-  async findById(id: number): Promise<User | null> {
+  private testEmitEvent() {
     this.socketEmitter.emitEventToAllClients('get-user', {
-      id,
+      id: 1,
     });
+  }
+
+  private async testRedis() {
+    await this.redisCacheService.set('abc', { a: 1, b: 2 });
+    await this.memoryCacheService.set('ghk', { c: 3, d: 4 });
+
+    const a = await this.redisCacheService.get('abc');
+    const b = await this.redisCacheService.get('ghk');
+    const c = await this.memoryCacheService.get('abc');
+    const d = await this.memoryCacheService.get('ghk');
+
+    console.log({
+      a,
+      b,
+      c,
+      d,
+      e: typeof a,
+      f: typeof b,
+      g: typeof c,
+      h: typeof d,
+    });
+  }
+
+  async findById(id: number): Promise<User | null> {
+    this.testEmitEvent();
+    await this.testRedis();
 
     const user = await this.userRepository.findOne({ where: { id } });
 
