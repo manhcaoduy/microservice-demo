@@ -7,6 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    networking.gke.io/managed-certificates: "internal-cert"
 spec:
   ingressClassName: {{ required "argocdIngress.ingressClassName is required" .Values.argocdIngress.ingressClassName | quote }}
   rules:

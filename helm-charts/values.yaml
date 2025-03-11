@@ -30,6 +30,7 @@ externalIngress:
   ingressClassName: nginx-external
 
 argocdIngress:
+  host: argocd.manhcd.site
   name: argocd-ingress
   namespace: argocd
   ingressClassName: nginx-argocd
