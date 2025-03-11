@@ -26,6 +26,7 @@ auth:
   password_secret_key: "secret"
 
 externalIngress:
+  host: "manhcd.site"
   name: "external-ingress"
   ingressClassName: nginx-external
 
