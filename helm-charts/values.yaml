@@ -12,7 +12,7 @@ socketer:
   image: gcr.io/nodal-cogency-446014-j2/socketer
   socketIoPort: 3001
   httpPort: 3002
-  tag: latest
+  tag: "41c5b43" 
 
 postgres:
   host: "postgres.manhcd.site"
