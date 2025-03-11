@@ -61,3 +61,32 @@ resource "google_cloudbuild_trigger" "bff_cloudbuild" {
 
   service_account = "projects/${var.project_id}/serviceAccounts/${google_service_account.cloudbuild_sa.email}"
 }
+
+resource "google_cloudbuild_trigger" "socketer_cloudbuild" {
+  name = var.socketer_cloudbuild.name
+  location = "global"
+  disabled = false
+
+  github {
+    owner = var.socketer_cloudbuild.github.owner
+    name  = var.socketer_cloudbuild.github.name
+    push {
+      branch = var.socketer_cloudbuild.github.branch
+      invert_regex = false
+    }
+  }
+
+  included_files = var.socketer_cloudbuild.included_files
+
+  filename = var.socketer_cloudbuild.filename
+
+  substitutions = {
+    _PROJECT_ID = var.project_id
+  }
+
+  approval_config {
+    approval_required = true
+  }
+
+  service_account = "projects/${var.project_id}/serviceAccounts/${google_service_account.cloudbuild_sa.email}"
+}

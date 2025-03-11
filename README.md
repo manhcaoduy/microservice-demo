@@ -26,12 +26,12 @@ cd terraform
 
 ```
 terraform plan --out=tfplan \
-  -target=module.cloudbuild \
-  -target=module.postgres \
-  -target=module.redis \
   -target=module.vpn \
   -target=module.vpc \
-  -target=module.gke && terraform apply "tfplan"
+  -target=module.gke \
+  -target=module.cloudbuild \
+  -target=module.postgres \
+  -target=module.redis && terraform apply "tfplan"
 ```
 
 Get GKE cluster credentials

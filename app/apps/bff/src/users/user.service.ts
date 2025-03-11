@@ -3,6 +3,7 @@ import {
   RedisCacheService,
 } from '@libs/caching/caching-client.service';
 import { AuthService } from '@libs/common/auth/auth.service';
+import { AppLogger } from '@libs/common/logger/app-logger';
 import { User } from '@libs/postgres/entities/user.entity';
 import { SocketEmitter } from '@libs/socket/emitter/emitter';
 import {
@@ -18,6 +19,8 @@ import { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new AppLogger(UserService.name);
+
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -42,7 +45,7 @@ export class UserService {
     const c = await this.memoryCacheService.get('abc');
     const d = await this.memoryCacheService.get('ghk');
 
-    console.log({
+    this.logger.info('test redis', {
       a,
       b,
       c,

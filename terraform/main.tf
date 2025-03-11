@@ -15,8 +15,19 @@ module "cloudbuild" {
       name   = "microservice-demo"
       branch = "^main$"
     }
-    included_files = ["app/**"]
+    included_files = ["app/apps/bff/**", "app/libs/**"]
     filename       = "terraform/cloudbuilds/bff-cloudbuild.yaml"
+  }
+
+  socketer_cloudbuild = {
+    name = "socketer-cloudbuild"
+    github = {
+      owner  = "manhcaoduy"
+      name   = "microservice-demo"
+      branch = "^main$"
+    }
+    included_files = ["app/apps/socketer/**", "app/libs/**"]
+    filename       = "terraform/cloudbuilds/socketer-cloudbuild.yaml"
   }
 }
 

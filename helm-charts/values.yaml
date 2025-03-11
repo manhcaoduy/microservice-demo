@@ -7,6 +7,13 @@ bff:
   tag: "c9a0f1a"
   url: "https://manhcd.site/bff"
 
+socketer:
+  name: socketer
+  image: gcr.io/nodal-cogency-446014-j2/socketer
+  socketIoPort: 3001
+  httpPort: 3002
+  tag: latest
+
 postgres:
   host: "postgres.manhcd.site"
   port: 5432
@@ -28,4 +35,7 @@ argocdIngress:
   ingressClassName: nginx-argocd
 
 redis:
-  url: redis://:redis@redis.manhcd.site:6379/0
+  host: redis.manhcd.site
+  port: 6379
+  password: f55ce96b-6b46-465a-b1b9-7090fa8c7118
+  db: 0
