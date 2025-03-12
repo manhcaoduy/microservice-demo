@@ -30,5 +30,9 @@ variable "nginx_server" {
       user = string
       public_key_file_path = string
     })
+    ssl = object({
+      certificate_path = string
+      private_key_path = string
+    })
   })
 }

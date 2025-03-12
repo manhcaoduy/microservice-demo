@@ -82,6 +82,10 @@ module "nginx" {
       user                 = "manh"
       public_key_file_path = "~/.ssh/manhcaoduy.pub"
     }
+    ssl = {
+      certificate_path = "~/.ssl/manhcd.site.crt"
+      private_key_path = "~/.ssl/manhcd.site.key"
+    }
   }
 }
 

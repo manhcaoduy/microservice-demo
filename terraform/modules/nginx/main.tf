@@ -30,6 +30,21 @@ resource "google_compute_instance" "nginx" {
     apt-get update
     apt-get install -y nginx
     
+    # Create SSL directory
+    mkdir -p /etc/ssl
+
+    cat > /etc/ssl/origin-cert.pem <<'CERT'
+    ${file(var.nginx_server.ssl.certificate_path)}
+    CERT
+
+    cat > /etc/ssl/origin-key.pem <<'KEY'
+    ${file(var.nginx_server.ssl.private_key_path)}
+    KEY
+
+    # Set permissions
+    chmod 600 /etc/ssl/origin-key.pem
+    chown root:root /etc/ssl/origin-*.pem
+    
     # Create Cloudflare IP allow list
     cat > /etc/nginx/allow-cloudflare-only.conf <<'EOL'
     # IPv4
@@ -79,8 +94,14 @@ resource "google_compute_instance" "nginx" {
     log_format combined_realip_cf '$http_cf_connecting_ip,$time_iso8601,$status';
 
     server {
-      listen 80 default_server;
+      listen 443 ssl default_server;
+      listen [::]:443 ssl default_server;
       server_name _;
+
+      ssl_certificate /etc/ssl/origin-cert.pem;
+      ssl_certificate_key /etc/ssl/origin-key.pem;
+      ssl_protocols TLSv1.2 TLSv1.3;
+      ssl_ciphers HIGH:!aNULL:!MD5;
 
       error_log /var/log/nginx/lb-error.log notice;
       access_log /var/log/nginx/lb-short.log combined_realip_cf;
@@ -114,9 +135,13 @@ resource "google_compute_instance" "nginx" {
       location /socket.io {
         proxy_pass http://upstream_app_pool/socket.io/;
         proxy_http_version 1.1;
+        proxy_set_header Host $host;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_read_timeout 3600;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
       }
 
       location / {
