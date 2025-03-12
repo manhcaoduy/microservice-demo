@@ -39,5 +39,5 @@ argocdIngress:
 redis:
   host: redis.manhcd.site
   port: 6379
-  password: f55ce96b-6b46-465a-b1b9-7090fa8c7118
+  password: 1fb99690-1603-4dad-9504-62c989202701
   db: 0
