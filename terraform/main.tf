@@ -175,9 +175,6 @@ module "dns" {
 
   vpc_id = module.vpc.vpc_ip
 
-  argocd_domain = "argocd.manhcd.site."
-  argocd_nginx_private_ip = module.k8s-services.ingress_nginx_argocd_ip
-
   postgres_domain = "postgres.manhcd.site."
   postgres_private_ip = module.postgres.postgres_ip
 
