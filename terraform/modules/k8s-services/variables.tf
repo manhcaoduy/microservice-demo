@@ -13,3 +13,10 @@ variable "argocd" {
     })
   })
 }
+
+variable "argocd_tls" {
+  type = object({
+    crt_file_path = string
+    key_file_path = string
+  })
+}

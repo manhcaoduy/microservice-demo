@@ -8,6 +8,22 @@ provider "kubernetes" {
   config_path = var.kubeconfig_path
 }
 
+# Create TLS secret for ArgoCD
+resource "kubernetes_secret" "argocd_tls" {
+  metadata {
+    name      = "argocd-cloudflare-tls"
+    namespace = "argocd"
+  }
+
+  type = "kubernetes.io/tls"
+
+  data = {
+    "tls.crt" = file(var.argocd_tls.crt_file_path)
+    "tls.key" = file(var.argocd_tls.key_file_path) 
+  }
+}
+
+
 # Install ArgoCD using Helm
 resource "helm_release" "argocd" {
   name       = "argocd"

@@ -168,6 +168,11 @@ module "k8s-services" {
       path                 = "helm-charts"
     }
   }
+
+  argocd_tls = {
+    crt_file_path = "~/.ssl/manhcd.site.crt"
+    key_file_path = "~/.ssl/manhcd.site.key"
+  }
 }
 
 module "dns" {
