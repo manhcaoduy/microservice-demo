@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: {{ required "argocdIngress.ingressClassName is required" .Values.argocdIngress.ingressClassName | quote }}
   rules:
-    - https:
+    - http:
         paths:
           - path: /
             pathType: Prefix 
