@@ -18,6 +18,10 @@ skaffold dev
 
 ### Start the infrastructure
 
+Setup domain for the Infra in Cloudflare 
+
+Turn on GCP API along the way
+
 Move into terraform folder
 
 ```
@@ -29,7 +33,11 @@ terraform plan --out=tfplan \
   -target=module.vpn \
   -target=module.vpc \
   -target=module.gke \
-  -target=module.cloudbuild \
+  -target=module.cloudbuild && terraform apply "tfplan"
+```
+
+```
+terraform plan --out=tfplan \
   -target=module.postgres \
   -target=module.redis && terraform apply "tfplan"
 ```

@@ -22,3 +22,6 @@ spec:
                 name: argocd-server
                 port:
                   number: 443
+      {{- if .Values.argocdIngress.host }}
+      host: {{ .Values.argocdIngress.host | quote }}
+      {{- end }}
