@@ -6,9 +6,12 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    networking.gke.io/managed-certificates: "internal-cert"
 spec:
   ingressClassName: {{ required "argocdIngress.ingressClassName is required" .Values.argocdIngress.ingressClassName | quote }}
+  tls:
+  - hosts:
+    - {{ .Values.argocdIngress.host | quote }}
+    secretName: argocd-cloudflare-tls
   rules:
     - http:
         paths:
