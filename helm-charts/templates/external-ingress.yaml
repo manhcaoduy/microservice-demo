@@ -20,7 +20,7 @@ spec:
               service:
                 name: {{ .Values.bff.name }}
                 port:
-                  number: 3000
+                  number: {{ .Values.bff.port }}
           - path: /socketer(/|$)(.*)
             pathType: ImplementationSpecific
             backend:

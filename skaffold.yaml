@@ -18,7 +18,7 @@ deploy:
     - name: manhcao-app
       chartPath: helm-charts
       valuesFiles:
-      - helm-charts/values-local.yaml
+        - helm-charts/values-local.yaml
       setValueTemplates:
         image.repository: "{{.IMAGE_MY_APP_IMAGE}}"
         image.tag: "{{.DIGEST_MY_APP_IMAGE}}"

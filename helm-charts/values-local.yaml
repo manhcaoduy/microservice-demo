@@ -36,12 +36,6 @@ argocdIngress:
   namespace: default
   ingressClassName: nginx
 
-socketIoIngress:
-  host: localhost
-  name: socket-io-ingress
-  namespace: default
-  ingressClassName: nginx
-
 redis:
   host: host.docker.internal
   port: 6390
