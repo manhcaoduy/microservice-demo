@@ -49,11 +49,11 @@ spec:
           value: {{ required "auth.password_secret_key is required" .Values.auth.password_secret_key | quote }}
         resources:
           requests:
-            cpu: 200m
-            memory: 180Mi
+            cpu: 50m
+            memory: 100Mi
           limits:
-            cpu: 300m
-            memory: 300Mi
+            cpu: 100m
+            memory: 200Mi
 
 ---
 apiVersion: v1
