@@ -12,6 +12,10 @@ build:
       context: app
       docker:
         dockerfile: app/apps/socketer/Dockerfile
+    - image: user
+      context: app
+      docker:
+        dockerfile: app/apps/user/Dockerfile
 deploy:
   helm:
     releases:

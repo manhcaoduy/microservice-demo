@@ -1,7 +1,6 @@
-import { User } from '@libs/postgres/entities/user.entity';
+import { UserResponse } from '@libs/common/responses/user.response';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { UserResponse } from '../../../../../libs/common/src/responses/user.response';
 
 export class UpdateUserByIdResponse {
   @Expose()
@@ -11,7 +10,7 @@ export class UpdateUserByIdResponse {
   @Type(() => UserResponse)
   user: UserResponse;
 
-  constructor(user: User) {
-    this.user = new UserResponse(user);
+  constructor(data: UpdateUserByIdResponse) {
+    this.user = new UserResponse(data.user);
   }
 }

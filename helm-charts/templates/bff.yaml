@@ -35,34 +35,18 @@ spec:
         ports:
         - containerPort: {{ .Values.bff.port }}
         env:
-        - name: POSTGRES_HOST
-          value: {{ required "postgres.host is required" .Values.postgres.host | quote }}
-        - name: POSTGRES_PORT
-          value: {{ required "postgres.port is required" .Values.postgres.port | quote }}
-        - name: POSTGRES_USER
-          value: {{ required "postgres.user is required" .Values.postgres.user | quote }}
-        - name: POSTGRES_PASSWORD
-          value: {{ required "postgres.password is required" .Values.postgres.password | quote }}
-        - name: POSTGRES_DB
-          value: {{ required "postgres.database is required" .Values.postgres.database | quote }}
-        - name: JWT_SECRET
-          value: {{ required "auth.jwt_secret is required" .Values.auth.jwt_secret | quote }}
-        - name: PASSWORD_SECRET_KEY
-          value: {{ required "auth.password_secret_key is required" .Values.auth.password_secret_key | quote }}
         - name: BFF_SERVICE_URL
           value: {{ required "bff.url is required" .Values.bff.url | quote }}
         - name: BFF_SERVICE_PORT
           value: {{ required "bff.port is required" .Values.bff.port | quote }}
         - name: ENV
           value: {{ .Values.env | quote }}
-        - name: REDIS_HOST
-          value: {{ required "redis.host is required" .Values.redis.host | quote }}
-        - name: REDIS_PORT
-          value: {{ required "redis.port is required" .Values.redis.port | quote }}
-        - name: REDIS_PASSWORD
-          value: {{ required "redis.password is required" .Values.redis.password | quote }}
-        - name: REDIS_DB
-          value: {{ required "redis.db is required" .Values.redis.db | quote }}
+        - name: USER_GRPC_URL
+          value: {{ required "user.url is required" .Values.user.url | quote }}
+        - name: JWT_SECRET
+          value: {{ required "auth.jwt_secret is required" .Values.auth.jwt_secret | quote }}
+        - name: PASSWORD_SECRET_KEY
+          value: {{ required "auth.password_secret_key is required" .Values.auth.password_secret_key | quote }}
         resources:
           requests:
             cpu: 200m

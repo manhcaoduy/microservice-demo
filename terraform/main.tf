@@ -29,6 +29,17 @@ module "cloudbuild" {
     included_files = ["app/apps/socketer/**", "app/libs/**"]
     filename       = "terraform/cloudbuilds/socketer-cloudbuild.yaml"
   }
+
+  user_cloudbuild = {
+    name = "user-cloudbuild"
+    github = {
+      owner  = "manhcaoduy"
+      name   = "microservice-demo"
+      branch = "^main$"
+    }
+    included_files = ["app/apps/user/**", "app/libs/**"]
+    filename       = "terraform/cloudbuilds/user-cloudbuild.yaml"
+  }
 }
 
 module "postgres" {

@@ -9,12 +9,12 @@ COPY nest-cli.json ./
 
 RUN yarn install --frozen-lockfile
 
-COPY apps/socketer ./apps/socketer
+COPY apps/user ./apps/user
 COPY libs ./libs
+COPY proto ./proto
 
-RUN yarn build socketer
+RUN yarn build user
 
-EXPOSE 3001
-EXPOSE 3002
+EXPOSE 50051 
 
-CMD ["node", "/app/dist/apps/socketer/main.js"]
+CMD ["node", "/app/dist/apps/user/main.js"]

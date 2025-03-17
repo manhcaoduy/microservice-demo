@@ -90,3 +90,32 @@ resource "google_cloudbuild_trigger" "socketer_cloudbuild" {
 
   service_account = "projects/${var.project_id}/serviceAccounts/${google_service_account.cloudbuild_sa.email}"
 }
+
+resource "google_cloudbuild_trigger" "user_cloudbuild" {
+  name = var.user_cloudbuild.name
+  location = "global"
+  disabled = false
+
+  github {
+    owner = var.user_cloudbuild.github.owner
+    name  = var.user_cloudbuild.github.name
+    push {
+      branch = var.user_cloudbuild.github.branch
+      invert_regex = false
+    }
+  }
+
+  included_files = var.user_cloudbuild.included_files
+
+  filename = var.user_cloudbuild.filename
+
+  substitutions = {
+    _PROJECT_ID = var.project_id
+  }
+
+  approval_config {
+    approval_required = true
+  }
+
+  service_account = "projects/${var.project_id}/serviceAccounts/${google_service_account.cloudbuild_sa.email}"
+}

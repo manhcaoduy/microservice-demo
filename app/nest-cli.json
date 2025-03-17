@@ -75,6 +75,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/socket/tsconfig.lib.json"
       }
+    },
+    "user": {
+      "type": "application",
+      "root": "apps/user",
+      "entryFile": "main",
+      "sourceRoot": "apps/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user/tsconfig.app.json"
+      }
+    },
+    "grpc": {
+      "type": "library",
+      "root": "libs/grpc",
+      "entryFile": "index",
+      "sourceRoot": "libs/grpc/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/grpc/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import { User } from '@libs/postgres/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -18,10 +17,28 @@ export class AuthService {
       .digest('hex');
   }
 
-  async generateAccessToken(user: User) {
+  async generateAccessToken(userId: string) {
     const payload = {
-      id: user.id,
+      userId,
     };
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.signAsync(payload, {
+      expiresIn: '1d',
+    });
+  }
+
+  async generateRefreshToken(userId: string) {
+    const payload = {
+      userId,
+    };
+    return this.jwtService.signAsync(payload, {
+      expiresIn: '1m',
+    });
+  }
+
+  async validateToken(token: string): Promise<string> {
+    const payload = await this.jwtService.verifyAsync(token, {
+      secret: this.configService.get('JWT_SECRET'),
+    });
+    return payload.userId;
   }
 }
