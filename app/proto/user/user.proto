@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package user;
+
+message User {
+  string id = 1;
+  string username = 2;
+  string first_name = 3;
+  string last_name = 4;
+  bool is_active = 5;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  string first_name = 3;
+  string last_name = 4;
+}
+
+message RegisterResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message ValidateAccessTokenRequest {
+  string access_token = 1;
+}
+
+message ValidateAccessTokenResponse {
+  string user_id = 1;
+}
+
+message GenerateNewAccessTokenRequest {
+  string refresh_token = 1;
+}
+
+message GenerateNewAccessTokenResponse {
+  string access_token = 1;
+}
+
+message GetUserByIdRequest {
+  string user_id = 1;
+}
+
+message GetUserByIdResponse {
+  User user = 1;
+}
+
+message UpdateUserData {
+  optional string first_name = 1;
+  optional string last_name = 2;
+  optional string password = 3;
+  optional bool is_active = 4;
+}
+
+message UpdateUserRequest {
+  string user_id = 1;
+  UpdateUserData user_data = 2;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}
+
+service UserService {
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc ValidateAccessToken(ValidateAccessTokenRequest) returns (ValidateAccessTokenResponse) {}
+  rpc GenerateNewAccessToken(GenerateNewAccessTokenRequest) returns (GenerateNewAccessTokenResponse) {}
+  rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse) {}
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+}

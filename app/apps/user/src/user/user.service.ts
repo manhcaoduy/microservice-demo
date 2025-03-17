@@ -4,6 +4,11 @@ import {
 } from '@libs/caching/caching-client.service';
 import { AuthService } from '@libs/common/auth/auth.service';
 import { AppLogger } from '@libs/common/logger/app-logger';
+import {
+  LoginRequest,
+  RegisterRequest,
+  UpdateUserData,
+} from '@libs/grpc/clients/user/user.pb';
 import { User } from '@libs/postgres/entities/user.entity';
 import { SocketEmitter } from '@libs/socket/emitter/emitter';
 import {
@@ -13,9 +18,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { LoginDto } from './dtos/login.dto';
-import { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
 
 @Injectable()
 export class UserService {
@@ -57,7 +59,7 @@ export class UserService {
     });
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     this.testEmitEvent();
     await this.testRedis();
 
@@ -70,7 +72,18 @@ export class UserService {
     return user;
   }
 
-  async create(user: CreateUserDto): Promise<string> {
+  async validateAccessToken(accessToken: string): Promise<string> {
+    return this.authService.validateToken(accessToken);
+  }
+
+  async generateNewAccessToken(refreshToken: string): Promise<string> {
+    const userId = await this.authService.validateToken(refreshToken);
+    return this.authService.generateAccessToken(userId);
+  }
+
+  async create(
+    user: RegisterRequest,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { username, password, firstName, lastName } = user;
 
     const existingUser = await this.userRepository.findOne({
@@ -92,12 +105,17 @@ export class UserService {
 
     await this.userRepository.save(newUser);
 
-    const accessToken = await this.authService.generateAccessToken(newUser);
+    const [accessToken, refreshToken] = await Promise.all([
+      this.authService.generateAccessToken(newUser.id),
+      this.authService.generateRefreshToken(newUser.id),
+    ]);
 
-    return accessToken;
+    return { accessToken, refreshToken };
   }
 
-  async login(data: LoginDto): Promise<string> {
+  async login(
+    data: LoginRequest,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { username, password } = data;
 
     const user = await this.userRepository.findOne({ where: { username } });
@@ -112,13 +130,19 @@ export class UserService {
       throw new BadRequestException('Wrong password');
     }
 
-    const accessToken = await this.authService.generateAccessToken(user);
+    const [accessToken, refreshToken] = await Promise.all([
+      this.authService.generateAccessToken(user.id),
+      this.authService.generateRefreshToken(user.id),
+    ]);
 
-    return accessToken;
+    return { accessToken, refreshToken };
   }
 
-  async update(id: number, user: UpdateUserByIdDto): Promise<User | null> {
-    const { password, firstName, lastName, isActive } = user;
+  async update(id: string, user?: UpdateUserData): Promise<User | null> {
+    const password = user?.password;
+    const firstName = user?.firstName;
+    const lastName = user?.lastName;
+    const isActive = user?.isActive;
 
     const passwordHash = password
       ? this.authService.generatePasswordHash(password)

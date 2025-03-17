@@ -6,7 +6,12 @@ export class CreateUserResponse {
   @ApiProperty()
   accessToken: string;
 
+  @Expose()
+  @ApiProperty()
+  refreshToken: string;
+
   constructor(data: CreateUserResponse) {
     this.accessToken = data.accessToken;
+    this.refreshToken = data.refreshToken;
   }
 }

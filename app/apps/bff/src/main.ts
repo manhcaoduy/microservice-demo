@@ -1,3 +1,4 @@
+import { AuthGuard } from '@libs/common/auth/auth.guard';
 import { BaseException } from '@libs/common/exceptions/http.exception';
 import { AllExceptionFilter } from '@libs/common/filters/all-exception.filter';
 import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
@@ -19,6 +20,9 @@ async function bootstrap() {
       transports: createLoggerTransports(process.env.ENV === 'local', 'bff'),
     }),
   });
+
+  const authGuard = app.get(AuthGuard);
+  app.useGlobalGuards(authGuard);
 
   app.useGlobalFilters(new AllExceptionFilter());
   // Add global interceptors

@@ -1,16 +1,22 @@
 import { CurrentUserId } from '@libs/common/auth/auth.decorator';
-import { AuthGuard } from '@libs/common/auth/auth.guard';
 import { Public } from '@libs/common/auth/public.decorator';
+import { USER_GRPC_CLIENT } from '@libs/grpc/client-options/user-grpc-client-option';
+import {
+  USER_SERVICE_NAME,
+  UserServiceClient,
+} from '@libs/grpc/clients/user/user.pb';
 import {
   Body,
   Controller,
   Get,
+  Inject,
   NotFoundException,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { lastValueFrom } from 'rxjs';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { LoginDto } from './dtos/login.dto';
 import { UpdateUserByIdDto } from './dtos/update-user-by-id.dto';
@@ -18,11 +24,19 @@ import { CreateUserResponse } from './responses/create-user.response';
 import { GetMyUserInfoResponse } from './responses/get-my-user-info.response';
 import { LoginResponse } from './responses/login.response';
 import { UpdateUserByIdResponse } from './responses/update-user-by-id.response';
-import { UserService } from './user.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  private userServiceClient!: UserServiceClient;
+
+  constructor(
+    @Inject(USER_GRPC_CLIENT) private readonly userService: ClientGrpc,
+  ) {}
+
+  onModuleInit() {
+    this.userServiceClient =
+      this.userService.getService<UserServiceClient>(USER_SERVICE_NAME);
+  }
 
   @Public()
   @Post('register')
@@ -37,8 +51,10 @@ export class UserController {
   async registerUser(
     @Body() createUserDto: CreateUserDto,
   ): Promise<CreateUserResponse> {
-    const accessToken = await this.userService.create(createUserDto);
-    return new CreateUserResponse({ accessToken });
+    const { accessToken, refreshToken } = await lastValueFrom(
+      this.userServiceClient.register(createUserDto),
+    );
+    return new CreateUserResponse({ accessToken, refreshToken });
   }
 
   @Public()
@@ -52,8 +68,10 @@ export class UserController {
     type: LoginResponse,
   })
   async loginUser(@Body() loginUserDto: LoginDto): Promise<LoginResponse> {
-    const accessToken = await this.userService.login(loginUserDto);
-    return new LoginResponse({ accessToken });
+    const { accessToken, refreshToken } = await lastValueFrom(
+      this.userServiceClient.login(loginUserDto),
+    );
+    return new LoginResponse({ accessToken, refreshToken });
   }
 
   @Get('me')
@@ -65,11 +83,12 @@ export class UserController {
     description: 'Returns the current user information',
     type: GetMyUserInfoResponse,
   })
-  @UseGuards(AuthGuard)
   async getMyUserInfo(
-    @CurrentUserId() userId: number,
+    @CurrentUserId() userId: string,
   ): Promise<GetMyUserInfoResponse> {
-    const user = await this.userService.findById(userId);
+    const { user } = await lastValueFrom(
+      this.userServiceClient.getUserById({ userId }),
+    );
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -85,15 +104,16 @@ export class UserController {
     description: 'Returns the updated user',
     type: UpdateUserByIdResponse,
   })
-  @UseGuards(AuthGuard)
   async updateUserById(
-    @CurrentUserId() id: number,
+    @CurrentUserId() userId: string,
     @Body() updateUserDto: UpdateUserByIdDto,
   ): Promise<UpdateUserByIdResponse> {
-    const user = await this.userService.update(id, updateUserDto);
+    const { user } = await lastValueFrom(
+      this.userServiceClient.updateUser({ userId, userData: updateUserDto }),
+    );
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return new UpdateUserByIdResponse(user);
+    return new UpdateUserByIdResponse({ user });
   }
 }

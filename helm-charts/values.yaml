@@ -14,6 +14,13 @@ socketer:
   httpPort: 3002
   tag: "41c5b43" 
 
+user:
+  name: user
+  image: gcr.io/nodal-cogency-446014-j2/user
+  port: 50051
+  tag: "41c5b43"
+  url: "user:50051"
+
 postgres:
   host: "postgres.manhcd.site"
   port: 5432

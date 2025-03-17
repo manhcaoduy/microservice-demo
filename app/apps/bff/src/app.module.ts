@@ -1,11 +1,12 @@
-import { AppCacheModule } from '@libs/caching/caching-client.module';
+import { AuthGuard } from '@libs/common/auth/auth.guard';
+import { AuthModule } from '@libs/common/auth/auth.module';
 import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
-import { PostgresModule } from '@libs/postgres/postgres.module';
-import { RedisClientModule } from '@libs/socket/redis-client/redis.module';
+import { GrpcClientsModule } from '@libs/grpc/client-options/grpc-clients.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { UserModule } from './users/user.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,12 +16,10 @@ import { UserModule } from './users/user.module';
         BFF_SERVICE_PORT: Joi.number().required(),
       }),
     }),
-    PostgresModule,
     UserModule,
-    AppCacheModule.registerWithMemory(),
-    AppCacheModule.registerWithRedis({ ttl: 100 }),
-    RedisClientModule,
+    AuthModule,
+    GrpcClientsModule,
   ],
-  providers: [LoggingInterceptor],
+  providers: [LoggingInterceptor, AuthGuard],
 })
 export class AppModule {}

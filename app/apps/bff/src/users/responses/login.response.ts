@@ -9,7 +9,15 @@ export class LoginResponse {
   })
   accessToken: string;
 
+  @Expose()
+  @ApiProperty({
+    description: 'JWT access token for authentication',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  refreshToken: string;
+
   constructor(data: LoginResponse) {
     this.accessToken = data.accessToken;
+    this.refreshToken = data.refreshToken;
   }
 }

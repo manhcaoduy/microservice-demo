@@ -22,16 +22,44 @@
     "esModuleInterop": true,
     "strictPropertyInitialization": true,
     "paths": {
-      "@libs/postgres": ["libs/postgres/src"],
-      "@libs/postgres/*": ["libs/postgres/src/*"],
-      "@libs/common": ["libs/common/src"],
-      "@libs/common/*": ["libs/common/src/*"],
-      "@libs/redis": ["libs/redis/src", "libs/redis/src"],
-      "@libs/redis/*": ["libs/redis/src/*", "libs/redis/src/*"],
-      "@libs/caching": ["libs/caching/src"],
-      "@libs/caching/*": ["libs/caching/src/*"],
-      "@libs/socket": ["libs/socket/src"],
-      "@libs/socket/*": ["libs/socket/src/*"]
+      "@libs/postgres": [
+        "libs/postgres/src"
+      ],
+      "@libs/postgres/*": [
+        "libs/postgres/src/*"
+      ],
+      "@libs/common": [
+        "libs/common/src"
+      ],
+      "@libs/common/*": [
+        "libs/common/src/*"
+      ],
+      "@libs/redis": [
+        "libs/redis/src",
+        "libs/redis/src"
+      ],
+      "@libs/redis/*": [
+        "libs/redis/src/*",
+        "libs/redis/src/*"
+      ],
+      "@libs/caching": [
+        "libs/caching/src"
+      ],
+      "@libs/caching/*": [
+        "libs/caching/src/*"
+      ],
+      "@libs/socket": [
+        "libs/socket/src"
+      ],
+      "@libs/socket/*": [
+        "libs/socket/src/*"
+      ],
+      "@libs/grpc": [
+        "libs/grpc/src"
+      ],
+      "@libs/grpc/*": [
+        "libs/grpc/src/*"
+      ]
     }
   }
 }
