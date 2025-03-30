@@ -2,7 +2,6 @@ import { AppCacheModule } from '@libs/caching/caching-client.module';
 
 import { UserModule } from './user/user.module';
 
-import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
 import { PostgresModule } from '@libs/postgres/postgres.module';
 import { RedisClientModule } from '@libs/socket/redis-client/redis.module';
 import { Module } from '@nestjs/common';
@@ -23,6 +22,6 @@ import * as Joi from 'joi';
     AppCacheModule.registerWithRedis({ ttl: 100 }),
     RedisClientModule,
   ],
-  providers: [LoggingInterceptor],
+  providers: [],
 })
 export class AppModule {}

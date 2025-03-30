@@ -41,6 +41,6 @@
     }
   },
   "files": {
-    "ignore": ["dist/", "libs/grpc/src/clients/"]
+    "ignore": ["dist/", "libs/common/src/grpc/node/"]
   }
 }

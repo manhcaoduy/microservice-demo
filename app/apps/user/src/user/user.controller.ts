@@ -12,8 +12,8 @@ import {
   UserServiceControllerMethods,
   ValidateAccessTokenRequest,
   ValidateAccessTokenResponse,
-} from '@libs/grpc/clients/user/user.pb';
-import { GetUserByIdRequest } from '@libs/grpc/clients/user/user.pb';
+} from '@libs/common/grpc/node/user/user.pb';
+import { GetUserByIdRequest } from '@libs/common/grpc/node/user/user.pb';
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
 

@@ -1,8 +1,7 @@
 import { AuthGuard } from '@libs/common/auth/auth.guard';
-import { BaseException } from '@libs/common/exceptions/http.exception';
-import { AllExceptionFilter } from '@libs/common/filters/all-exception.filter';
-import { LoggingInterceptor } from '@libs/common/interceptors/logging.interceptor';
-import { TransformResponseInterceptor } from '@libs/common/interceptors/transform-response.interceptor';
+import { BaseHttpException } from '@libs/common/http/exceptions/http.exception';
+import { HttpExceptionFilter } from '@libs/common/http/http.filter';
+import { HttpInterceptor } from '@libs/common/http/http.interceptor';
 import { createLoggerTransports } from '@libs/common/logger/transports';
 import { HttpStatus, ValidationPipe } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common';
@@ -24,11 +23,11 @@ async function bootstrap() {
   const authGuard = app.get(AuthGuard);
   app.useGlobalGuards(authGuard);
 
-  app.useGlobalFilters(new AllExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
   // Add global interceptors
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
-    new TransformResponseInterceptor(),
+    new HttpInterceptor(),
   );
 
   app.use(
@@ -50,7 +49,7 @@ async function bootstrap() {
           property: error.property,
           message: error.constraints ? Object.values(error.constraints)[0] : '',
         }));
-        return new BaseException(
+        return new BaseHttpException(
           'Invalid Parameter',
           HttpStatus.BAD_REQUEST,
           'parameter must be valid',
@@ -88,9 +87,6 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
-
-  const loggingInterceptor = app.get(LoggingInterceptor);
-  app.useGlobalInterceptors(loggingInterceptor);
 
   await app.listen(configService.get('BFF_SERVICE_PORT')!);
 }
