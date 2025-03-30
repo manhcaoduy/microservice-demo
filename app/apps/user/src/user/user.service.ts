@@ -3,21 +3,22 @@ import {
   RedisCacheService,
 } from '@libs/caching/caching-client.service';
 import { AuthService } from '@libs/common/auth/auth.service';
-import { AppLogger } from '@libs/common/logger/app-logger';
 import {
   LoginRequest,
   RegisterRequest,
   UpdateUserData,
-} from '@libs/grpc/clients/user/user.pb';
+} from '@libs/common/grpc/node/user/user.pb';
+import { AppLogger } from '@libs/common/logger/app-logger';
 import { User } from '@libs/postgres/entities/user.entity';
 import { SocketEmitter } from '@libs/socket/emitter/emitter';
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  UserNotFoundException,
+  UsernameAlreadyExistsException,
+  WrongPasswordException,
+} from './user.exception';
 
 @Injectable()
 export class UserService {
@@ -66,7 +67,7 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFoundException('User not found');
     }
 
     return user;
@@ -91,7 +92,7 @@ export class UserService {
     });
 
     if (existingUser) {
-      throw new BadRequestException('Username already exists');
+      throw new UsernameAlreadyExistsException('Username already exists');
     }
 
     const passwordHash = this.authService.generatePasswordHash(password);
@@ -127,7 +128,7 @@ export class UserService {
     const passwordHash = this.authService.generatePasswordHash(password);
 
     if (user.passwordHash !== passwordHash) {
-      throw new BadRequestException('Wrong password');
+      throw new WrongPasswordException('Wrong password');
     }
 
     const [accessToken, refreshToken] = await Promise.all([

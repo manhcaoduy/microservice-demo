@@ -101,8 +101,7 @@
     "moduleNameMapper": {
       "^@libs/postgres(|/.*)$": "<rootDir>/libs/postgres/src/$1",
       "^@libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
-      "^@libs/caching(|/.*)$": "<rootDir>/libs/caching/src/$1",
-      "^@libs/grpc(|/.*)$": "<rootDir>/libs/grpc/src/$1"
+      "^@libs/caching(|/.*)$": "<rootDir>/libs/caching/src/$1"
     }
   },
   "lint-staged": {

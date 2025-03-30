@@ -1,10 +1,7 @@
 import { CurrentUserId } from '@libs/common/auth/auth.decorator';
 import { Public } from '@libs/common/auth/public.decorator';
-import { USER_GRPC_CLIENT } from '@libs/grpc/client-options/user-grpc-client-option';
-import {
-  USER_SERVICE_NAME,
-  UserServiceClient,
-} from '@libs/grpc/clients/user/user.pb';
+import { UserServiceClient } from '@libs/common/grpc/node/user/user.pb';
+import { USER_SERVICE } from '@libs/common/grpc/options/user-grpc-option';
 import {
   Body,
   Controller,
@@ -14,7 +11,6 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { lastValueFrom } from 'rxjs';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -27,16 +23,9 @@ import { UpdateUserByIdResponse } from './responses/update-user-by-id.response';
 
 @Controller('users')
 export class UserController {
-  private userServiceClient!: UserServiceClient;
-
   constructor(
-    @Inject(USER_GRPC_CLIENT) private readonly userService: ClientGrpc,
+    @Inject(USER_SERVICE) private readonly userServiceClient: UserServiceClient,
   ) {}
-
-  onModuleInit() {
-    this.userServiceClient =
-      this.userService.getService<UserServiceClient>(USER_SERVICE_NAME);
-  }
 
   @Public()
   @Post('register')

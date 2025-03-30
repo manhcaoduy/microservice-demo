@@ -1,18 +1,18 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
-export interface BaseExceptionInfo {
+export interface BaseHttpExceptionInfo {
   code?: string;
   metadata?: any;
 }
 
-export class BaseException extends HttpException {
-  private readonly info: BaseExceptionInfo | null;
+export class BaseHttpException extends HttpException {
+  private readonly info: BaseHttpExceptionInfo | null;
 
   constructor(
     name: string,
-    statusCode: number,
+    statusCode: HttpStatus,
     message: string,
-    info: BaseExceptionInfo | null = null,
+    info: BaseHttpExceptionInfo | null = null,
   ) {
     super(message, statusCode);
     Object.setPrototypeOf(this, new.target.prototype);

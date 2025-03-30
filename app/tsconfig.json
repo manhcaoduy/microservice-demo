@@ -35,11 +35,9 @@
         "libs/common/src/*"
       ],
       "@libs/redis": [
-        "libs/redis/src",
         "libs/redis/src"
       ],
       "@libs/redis/*": [
-        "libs/redis/src/*",
         "libs/redis/src/*"
       ],
       "@libs/caching": [
@@ -53,12 +51,6 @@
       ],
       "@libs/socket/*": [
         "libs/socket/src/*"
-      ],
-      "@libs/grpc": [
-        "libs/grpc/src"
-      ],
-      "@libs/grpc/*": [
-        "libs/grpc/src/*"
       ]
     }
   }
